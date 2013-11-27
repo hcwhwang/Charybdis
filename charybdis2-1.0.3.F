@@ -4,6 +4,8 @@ C              Initilisation and Event Generation Routines
 C----------------------------------------------------------------------
 C----------------------------------------------------------------------
 
+C--- TEST 
+
 CDECK  ID>, UPINIT.
 *CMZ :-        -17/07/03  18.11.30  by  Peter Richardson
 *-- Author :    Chris Harris and Peter Richardson
