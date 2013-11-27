@@ -35,7 +35,7 @@ IDBMUP(1): (default is 2212)
 IDBMUP(2): (default is 2212)
 2212
 EBMUP(1): (default is 7000.0)
-7000.0
+8000.0
 EBMUP(2): (default is 7000.0)
 7000.0
 MINMSS: (default is 5000.0)
