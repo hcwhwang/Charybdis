@@ -69,7 +69,7 @@ IBHPRN: (default is 1)
 ----- Model parameters and conventions -----
 --------------------------------------------
 TOTDIM: (default is 6)
-10
+6
 MPLNCK: (default is 1000.0)
 1000.0
 MSSDEF: (default is 3 -- PDG definition)

@@ -42,7 +42,7 @@ PDFCHOICE = LHAPDF
 #
 ##LHAPDF example: 
 #LPDF   = -L/lha_pdf_instalation_path/lib/ -lLHAPDF
-LPDF   = -L/Users/hwangchanwook/Work/LHAPDF/lib/ -lLHAPDF
+LPDF   = -L/Users/ChanwookHwang/Work/LHAPDF/lib/ -lLHAPDF
 #LPDF   = -L/users/cwhwang/lhapdf/lib/ -lLHAPDF
 #----------------------------------------------------------------------------
 # Set compiler

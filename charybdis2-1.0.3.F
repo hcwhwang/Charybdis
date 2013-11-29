@@ -4,8 +4,6 @@ C              Initilisation and Event Generation Routines
 C----------------------------------------------------------------------
 C----------------------------------------------------------------------
 
-C--- TEST 
-
 CDECK  ID>, UPINIT.
 *CMZ :-        -17/07/03  18.11.30  by  Peter Richardson
 *-- Author :    Chris Harris and Peter Richardson
@@ -254,7 +252,7 @@ C--choice of outgoing particles
          ENDIF
 #endif
       ENDIF
-      IF(MINMSS.LT.MPLNCK) WRITE(*,22)
+C      IF(MINMSS.LT.MPLNCK) WRITE(*,22)
 #if defined (GINGRICH)
       IF (DGSB) DGTENSION =(DGMS/MPLNCK)**4/(DGGS*(2.0D0*ACOS(-1.0))**3)
       WRITE(*,152) DGTENSION
@@ -382,7 +380,7 @@ C--format statements for the output
      &     10X,'WARNING: PARTONIC CM ENERGY SMALLER ',/,
      &     10X,'THAN PLANCK MASS. MODEL MAY NOT BE ',/,
      &     10X,'VALID IN THIS REGION. ',/,
-     &     10X,'RUNS CONTINUES AT USER`S RISK',/)
+     &     10X,'RUNS CONTINUES AT USER''S RISK',/)
       END
 
 CDECK  ID>, UPEVNT.
@@ -571,9 +569,8 @@ C--event common block
      &              SPINUP(MAXNUP)
 C--Local Variables
       DOUBLE PRECISION ECMS,ONE,TWO,PIFAC,THREE,ZERO,
-     &     CHRGEN,RPOW,A0,A1,EMJ,FACT,QSQ,HCS,PROB,W1,W2,W3,W4,
-     &     TEMPFACTR,FACTR,RCS,BHPOW,DISF1,DISF2,OMEGAD,DL2GT,PSTEST,
-     $     CFACTOR(13,13),
+     &     CHRGEN,RPOW,A0,A1,EMJ,FACT,QSQ,HCS,PROB,
+     &     FACTR,RCS,BHPOW,DISF1,DISF2,OMEGAD,DL2GT,PSTEST,
 #if !defined(GINGRICH)
      &     RHORSQ,PLPOW,MPFACT,PA(5),PB(5),PC(5),PCM,CHUPCM,PCMF(5),
 #else
@@ -590,13 +587,12 @@ C--Local Variables
      &     IP,IQ,PT,I,BHCHRG,IDN(2),NTRY,NHTRY,SAVCHR,SAVBRN,ID(21),
      &     MHTRY,LTRY,LHTRY,CHFCHG,SPIN,FSPIN(21),NEX,NBODYNOW,
      &     STATNBODY,POLARIZ,FPOLARIZ(21),ILEPTON(0:3),SAVLEPTON(0:3)
-      LOGICAL GENEVT,CHRLOG,FIRST,OKDEC,NBODYCONVERGENCE,LOWTH,HVYQONLY
+      LOGICAL GENEVT,CHRLOG,FIRST,OKDEC,NBODYCONVERGENCE,LOWTH
       EXTERNAL CHFMAS,CHRGEN,CHUPCM,CHRLOG,CHFCHG,BSTNEW,BSTNOW
       PARAMETER(ONE=1.0D0,TWO=2.0D0,THREE=3.0D0,ZERO=0.0D0,NHTRY=200)
       PARAMETER(MHTRY=20,LHTRY=200,GEV2PB=389379.D3)
       SAVE HCS,BHPOW,PLPOW,RPOW,A0,A1,FACT,MPFACT,PIFAC,NEX
       DATA FIRST/.TRUE./
-      DATA HVYQONLY /.TRUE./
 #if defined(GINGRICH)
       DOUBLE PRECISION THRESH,BRECOIL
       INTEGER BHBARY,CHST2
@@ -692,119 +688,19 @@ C--Select initial momentum fractions (i.e. limits in the integration over pdfs)
       XLMIN=LOG(XXMIN)
       FACT=-GEV2PB*PIFAC*RHORSQ*EMJ*XLMIN*TWO/EMSCA
 C--Include Yoshino-Rychkov factor & spin
-      IF (YRCSEC) THEN
-        FACT=FACT*YRF(TOTDIM-4)
-
-
-
-
-C-----MODIFICATION----------------------------------------------------------------
-      ELSE 
-        FACT=FACT*4D0*(1D0/(1D0+((TOTDIM-2)/2D0)**2))**(2D0/(TOTDIM-3))
-C--------------------------------------------------------------------------------
-
-
-
-
-
-      ENDIF
-C--Save C-factor values---------
-      IF (.NOT.HVYQONLY) THEN
-         CFACTOR(1,1)=8.14536D-5    
-         CFACTOR(1,2)=8.06258D-5      
-         CFACTOR(1,3)=0.000393687      
-         CFACTOR(1,4)=0.000391965     
-         CFACTOR(1,5)=0.000807906     
-         CFACTOR(1,13)=0.00107013      
-         CFACTOR(2,2)=7.98065D-5     
-         CFACTOR(2,3)=0.000528489     
-         CFACTOR(2,4)=0.000665558     
-         CFACTOR(2,5)=0.00387594     
-         CFACTOR(2,13)=0.00105928      
-         CFACTOR(3,3)=0.001898     
-         CFACTOR(3,4)=0.00256642     
-         CFACTOR(3,5)=0.0038955     
-         CFACTOR(3,13)=0.0051701      
-         CFACTOR(4,4)=0.0034703     
-         CFACTOR(4,5)=0.0193658
-         CFACTOR(4,13)=0.00699052
-         CFACTOR(5,5)=0.0138953
-         CFACTOR(5,13)=0.0139894
-         CFACTOR(13,13)=0.0140845
-      ELSEIF (HVYQONLY) THEN
-         CFACTOR(1,1)=0.    
-         CFACTOR(1,2)=0.    
-         CFACTOR(1,3)=0.     
-         CFACTOR(1,4)=0.     
-         CFACTOR(1,5)=0.    
-         CFACTOR(1,13)=0.     
-         CFACTOR(2,2)=0.     
-         CFACTOR(2,3)=0.     
-         CFACTOR(2,4)=0.     
-         CFACTOR(2,5)=0.     
-         CFACTOR(2,13)=0.      
-         CFACTOR(3,3)=0.     
-         CFACTOR(3,4)=0.     
-         CFACTOR(3,5)=0.     
-         CFACTOR(3,13)=0.      
-         CFACTOR(4,4)=0.     
-         CFACTOR(4,5)=0.
-         CFACTOR(4,13)=0.
-         CFACTOR(5,5)=0.0138953
-         CFACTOR(5,13)=0.0139894
-         CFACTOR(13,13)=0.0140845
-      ENDIF
-      DO IP=1,13
-         DO IQ=1,13
-            IF (IP.GT.IQ) THEN
-               CFACTOR(IP,IQ)=CFACTOR(IQ,IP)
-            ENDIF
-            IF (IP.EQ.6.OR.IQ.EQ.6) THEN
-               CFACTOR(IP,IQ)=0.
-            ENDIF
-         ENDDO
-      ENDDO
-      DO IP=1,13
-         DO IQ=1,13
-            IF(IP.GT.6.AND.IP.LT.13.AND.IQ.LE.6) THEN
-               CFACTOR(IP,IQ)=CFACTOR(IP-6,IQ)
-            ELSEIF(IP.LE.6.AND.IQ.GT.6.AND.IQ.LT.13) THEN
-               CFACTOR(IP,IQ)=CFACTOR(IP,IQ-6)
-            ELSEIF(IP.GT.6.AND.IP.LT.13.AND.IQ.GT.6.AND.IQ.LT.13) THEN
-               CFACTOR(IP,IQ)=CFACTOR(IP-6,IQ-6)
-            ELSEIF(IP.EQ.13.AND.IQ.GT.6.AND.IQ.LT.13) THEN
-               CFACTOR(IP,IQ)=CFACTOR(IP,IQ-6)
-            ELSEIF(IQ.EQ.13.AND.IP.GT.6.AND.IP.LT.13) THEN
-               CFACTOR(IP,IQ)=CFACTOR(IP-6,IQ)
-            ENDIF
-         ENDDO
-      ENDDO
-C      DO IP=1,13
-C         DO IQ=1,13
-C            WRITE(*,*) IP, IQ, CFACTOR(IP,IQ)
-C         ENDDO
-C      ENDDO
-
+      IF (YRCSEC) FACT=FACT*YRF(TOTDIM-4)
 C--Change momentum scale for calling pdfs (see comment above)
       IF (GTSCA) EMSCA=1/SQRT(RHORSQ)
       SCALUP = EMSCA
       CALL CHPDF(XXMIN,XLMIN,EMSCA,XX,DISF)
       HCS=ZERO
-      FACTR=ZERO
-      DO IP=1,13
-         DO IQ=1,13
-            TEMPFACTR=FACT*DISF(IP,1)*DISF(IQ,2)*CFACTOR(IP,IQ)
-            FACTR=FACTR+TEMPFACTR
-         ENDDO
-      ENDDO
-
-C-----MODIFICATION------------------------------------------------------
-C      W1=FACT*DISF(13,1)*DISF(13,2)*0.01408
-C      W2=W1+FACT*DISF(13,1)*DISF(5,2)*(0.02021/2.+0.00419/2.)
-C      W3=W2+FACT*DISF(5,1)*DISF(13,2)*(0.02021/2.+0.00419/2.)
-C      W4=W3+FACT*DISF(5,1)*DISF(5,2)*(0.00133/4.+0.03082/4.+0.00639/2.)
-C      FACTR=W4
-C
+      DISF1=ZERO
+      DISF2=ZERO
+      DO 30 IP=1,13
+      DISF1=DISF1+DISF(IP,1)
+ 30   DISF2=DISF2+DISF(IP,2)
+      FACTR=FACT*DISF1*DISF2
+ 31   CONTINUE
       HCS=FACTR
       XWGTUP = HCS
       IF(.NOT.GENEVT)THEN
@@ -812,23 +708,9 @@ c-----This block determines if a black hole with a mass above MINMSS would be ge
          IF(MJLOST.AND.USEMINMSSBH)THEN
             RCS=HCS*CHRGEN(1)
             HCS = ZERO
-C            IF(RCS.GT.0.AND.RCS.LE.W1) THEN
-C               IDN(1)=13
-C               IDN(2)=13
-C            ELSEIF(RCS.GT.W1.AND.RCS.LE.W2) THEN
-C               IDN(1)=13
-C               IDN(2)=5
-C            ELSEIF(RCS.GT.W2.AND.RCS.LE.W3) THEN
-C               IDN(1)=5
-C               IDN(2)=13
-C            ELSEIF(RCS.GT.W3.AND.RCS.LE.W4) THEN
-C               IDN(1)=5
-C               IDN(2)=5
-C            ENDIF
-C----------------------------------------------------------------------------------------------------
             DO 201 IP=1,13
                DO 101 IQ=1,13
-                  FACTR=FACT*DISF(IP,1)*DISF(IQ,2)*CFACTOR(IP,IQ)
+                  FACTR=FACT*DISF(IP,1)*DISF(IQ,2)
                   HCS=HCS+FACTR
                   IF (HCS.GT.RCS) GOTO 991
  101           CONTINUE
@@ -852,13 +734,13 @@ C--Use the les houches common block temporarily
                PUP(4,I) = SQRT(PUP(3,I)**2+PUP(5,I)**2)
                ISTUP(I) = -1
                SPINUP(I) = 9D0
-C               IF(PUP(4,I).GT.EBMUP(I))THEN
-C                  WRITE(*,*)'CHEVNT WARNING:'
-C                  WRITE(*,*)'   Bad momentum fraction. Trying again!'
-C                  WRITE(*,*)'   If this error repeats too many times'//
-C     &' please check your beam energies and MINMSS MAXMSS ranges.'
-C                  GOTO 31
-C               END IF
+               IF(PUP(4,I).GT.EBMUP(I))THEN
+                  WRITE(*,*)'CHEVNT WARNING:'
+                  WRITE(*,*)'   Bad momentum fraction. Trying again!'
+                  WRITE(*,*)'   If this error repeats too many times'//
+     &' please check your beam energies and MINMSS MAXMSS ranges.'
+                  GOTO 31
+               END IF
             ENDDO
             PUP(3,2) = -PUP(3,2)
 C--   PCMF is the total momentum of the collision 
@@ -870,43 +752,13 @@ C--   Choose BH mass (and J) and compare with the MINMSS
             IF(BHMASS.LT.MINMSS) XWGTUP=0D0
          ENDIF
 C--------------end of decision block for the weight (see also below the rejection when generating events -- events below MINMSS must be discarded)
+         RETURN
       ENDIF
       RCS=HCS*CHRGEN(1)
       HCS = ZERO
-      DO IP=1,13
-         DO IQ=1,13
-            TEMPFACTR=FACT*DISF(IP,1)*DISF(IQ,2)*CFACTOR(IP,IQ)
-            FACTR=FACTR+TEMPFACTR
-         ENDDO
-      ENDDO
-
-
-
-C-----MODIFICATION-------------------------------------------------------------------------------
-C      IF(RCS.GT.0.AND.RCS.LE.W1) THEN
-C         IDN(1)=13
-C         IDN(2)=13
-C      ELSEIF(RCS.GT.W1.AND.RCS.LE.W2) THEN
-C         IDN(1)=13
-C         IDN(2)=5
-C      ELSEIF(RCS.GT.W2.AND.RCS.LE.W3) THEN
-C         IDN(1)=5
-C         IDN(2)=13
-C      ELSEIF(RCS.GT.W3.AND.RCS.LE.W4) THEN
-C         IDN(1)=5
-C         IDN(2)=5
-C      ENDIF
-C-----------------------------------------------------------------------------------------------
-
-
-
-
-
-
-
       DO 20 IP=1,13
       DO 10 IQ=1,13
-      FACTR=FACT*DISF(IP,1)*DISF(IQ,2)*CFACTOR(IP,IQ)
+      FACTR=FACT*DISF(IP,1)*DISF(IQ,2)
       HCS=HCS+FACTR
       IF (HCS.GT.RCS) GOTO 99
  10   CONTINUE
@@ -930,13 +782,13 @@ C--put the incoming particles in the Les Houches common block
          PUP(4,I) = SQRT(PUP(3,I)**2+PUP(5,I)**2)
          ISTUP(I) = -1
          SPINUP(I) = 9D0
-C         IF(PUP(4,I).GT.EBMUP(I))THEN
-C            WRITE(*,*)'CHEVNT WARNING:'
-C            WRITE(*,*)'   Bad momentum fraction. Trying again!'
-C            WRITE(*,*)'   If this error repeats too many times please'//
-C     &' check your beam energies and MINMSS MAXMSS ranges.'
-C            GOTO 31
-C         END IF
+         IF(PUP(4,I).GT.EBMUP(I))THEN
+            WRITE(*,*)'CHEVNT WARNING:'
+            WRITE(*,*)'   Bad momentum fraction. Trying again!'
+            WRITE(*,*)'   If this error repeats too many times please'//
+     &' check your beam energies and MINMSS MAXMSS ranges.'
+            GOTO 31
+         END IF
       ENDDO
       PUP(3,2) = -PUP(3,2)
 C--PCMF is the total momentum of the collision 
@@ -1010,7 +862,7 @@ C----------Choose Z axis at random
             SBH(2)=CHRGEN(2)
             SBH(3)=CHRGEN(3)
             SSQ=SBH(1)**2+SBH(2)**2+SBH(3)**2
-            IF (SSQ.EQ.ZERO.OR.SSQ.GT.ONE) GOTO 461
+	    IF (SSQ.EQ.ZERO.OR.SSQ.GT.ONE) GOTO 461
          ENDIF
 C----Reset JBH
          JBH=JNEW
@@ -1515,7 +1367,7 @@ C--Stable remnant model -- only B=0 allowed
             PRINT *,'CHEVNT: BAD REMNANT CHARGE = ',BHCHRG
             GOTO 35
          ENDIF
-         ISTUP(NUP)=2      
+         ISTUP(NUP)=1      
          MOTHUP(1,NUP) = 1
          MOTHUP(2,NUP) = 2
          NBODYNOW=0
@@ -1554,7 +1406,7 @@ C--record with 0 kinematics to conserve baryon number.
         PUP(3,NUP) = 0.0
         PUP(4,NUP) = 0.0
         PUP(5,NUP) = 0.0
-        ISTUP(NUP) = 2
+        ISTUP(NUP) = 1
         MOTHUP(1,NUP) = 1
         MOTHUP(2,NUP) = 2
         IF (IBARYN .EQ. 0) THEN
@@ -1585,7 +1437,7 @@ C--for |B|>1
           BHCHRG = BHCHRG - CHFCHG(-1)
           IBARYN = IBARYN - 1
           BHBARY = BHBARY + 1
-          ISTUP(NUP) = 2
+          ISTUP(NUP) = 1
           MOTHUP(1,NUP) = 1
           MOTHUP(2,NUP) = 2
         ELSEIF (IBARYN .EQ. -2) THEN
@@ -1603,7 +1455,7 @@ C--for |B|>1
           BHCHRG = BHCHRG - CHFCHG(1)
           IBARYN = IBARYN + 1
           BHBARY = BHBARY - 1
-          ISTUP(NUP) = 2
+          ISTUP(NUP) = 1
           MOTHUP(1,NUP) = 1
           MOTHUP(2,NUP) = 2
         ELSE
@@ -1677,7 +1529,7 @@ C--Perform the NBODY decay of the remnant
 C------Put particle properties in the Les houches common block
          PUP(5,NUP+I) = CHFMAS(ID(I))
          PSTEST=PSTEST-PUP(5,NUP+I)
-         ISTUP(NUP+I) = 2
+         ISTUP(NUP+I) = 1
          IDUP(NUP+I) = ID(I)
          MOTHUP(1,NUP+I) = 1
          MOTHUP(2,NUP+I) = 2
@@ -2078,8 +1930,6 @@ C--------Evaluate distribution functions at the given momentum fractions
          DO I=1,2
             CALL STRUCTM(XXB(I),EMSCAB,
      &           UPV,DNV,USEA,DSEA,STR,CHM,BTM,TOP,GLU)
-
-
             DISFB( 3,I) = STR
             DISFB( 4,I) = CHM
             DISFB( 5,I) = BTM
@@ -2562,28 +2412,11 @@ C-----------------------------------------------------------------------
       INCLUDE 'charybdis2.inc'
 C--Input/Output
       INTEGER PT,SPIN,BHCHRG,NEX
-      DOUBLE PRECISION OBLA,RH,BMASS
+      DOUBLE PRECISION OBLA,RH
 C--Local variables
-
-
-C-----MODIFICATION-----------------------------------------------------
-      INTEGER CHFCHG,UFLUX,UEFLUX,MA,MSPIN,IASTAR,INDX
-      DOUBLE PRECISION DSUM, KL
-      DOUBLE PRECISION WGTUP,WGTCHM,WGTTOP,WGTDWN,WGTSTR,WGTBTM
+      INTEGER CHFCHG,UFLUX,UEFLUX,MA,MSPIN,IASTAR
       PARAMETER(MA=26,MSPIN=3)
-      DOUBLE PRECISION  DFERMIONL(6), DFERMIONR(6)
-      DATA DFERMIONL /0.0006851,0.0150148,0.0600244,0.0006851,
-     &0.0150148,0.0600244/
-      DATA DFERMIONR / 2.9D-8, 0.0021630, 0.4961677, 2.1D-7, 3.6D-6,
-     &0.0028090/
-
-      DOUBLE PRECISION PTYPE,CHRGEN,FLUX(MSPIN,MA),CFERMION(3),
-     &DGAUGE,DHIGGS,PI
-C----------------------------------------------------------------------
-
-
-
-
+      DOUBLE PRECISION PTYPE,CHRGEN,FLUX(MSPIN,MA),CFERMION(3)
 #if !defined (GINGRICH)
      &,CBOSON(5),ASTAR,ASTARMAX,F2S0,F2S1,F2S2,FRACDA,PTOT,NFACTOR,
      &TOTFLUX
@@ -2630,7 +2463,6 @@ C  NEX. This occurs only once at FIRST call.
          FIRST=.FALSE.
       END IF
 C--Select the correct IASTAR in the flux tables
-
       ASTAR=OBLA/RH
       IF (ASTAR.LE.ASTARMAX) THEN
          IASTAR=1+INT(ASTAR/ASTARMAX*(MA-1.))
@@ -2640,7 +2472,7 @@ C--Select the correct IASTAR in the flux tables
 C--Interpolate the flux for each spin      
       IF(GRYBDY)THEN
          IF (IASTAR.LT.MA)THEN
-            FRACDA=ASTAR*(MA-1D0)/ASTARMAX-(IASTAR-1) 
+            FRACDA=ASTAR*(MA-1D0)/ASTARMAX-(IASTAR-1)  
             F2S0=FLUX(1,IASTAR+1)*FRACDA+FLUX(1,IASTAR)*(1-FRACDA)
             F2S1=FLUX(2,IASTAR+1)*FRACDA+FLUX(2,IASTAR)*(1-FRACDA)
             F2S2=FLUX(3,IASTAR+1)*FRACDA+FLUX(3,IASTAR)*(1-FRACDA)
@@ -2677,36 +2509,7 @@ C------Here the geometrical approximation was used
          WRITE(*,*)'CH: WARNING - Negative fluxes not allowed'
          STOP
       END IF
-C-----MODIFICATION----------------------------------------------------
-      PI=ACOS(-1D0)
-      KL=11.3D0*PI
-C      WRITE(*,*) BMASS,MPLNCK
-
-C-----Left handed-----------------------------------------------------
-      DSUM=0D0
-      DO 1 INDX=1,6
-         DSUM=DSUM+DFERMIONL(INDX)
-C         WRITE(*,*) INDX,DFERMION(INDX)
- 1    CONTINUE
-
-C-----Right handed---------------------------------------------------     
-      DO 2 INDX=1,6
-         DSUM=DSUM+DFERMIONR(INDX)
-C         WRITE(*,*) INDX,DFERMION(INDX)
- 2    CONTINUE      
-      WGTUP=F2S1*6*(DFERMIONL(1)+DFERMIONR(1))
-      WGTCHM=WGTUP+F2S1*6*(DFERMIONL(2)+DFERMIONR(2))
-      WGTTOP=WGTCHM+F2S1*6*(DFERMIONL(3)+DFERMIONR(3))
-      WGTDWN=WGTTOP+F2S1*6*(DFERMIONL(4)+DFERMIONR(4))
-      WGTSTR=WGTDWN+F2S1*6*(DFERMIONL(5)+DFERMIONR(5))
-      WGTBTM=WGTSTR+F2S1*6*(DFERMIONL(6)+DFERMIONR(6))
-
-      DGAUGE=0.0281690
-      DHIGGS=1D0     
-C---------------------------------------------------------------------
-
-
-C      WRITE(*,*) EPSLN,DFERMION(3)+DFERMION(9)
+      
 C--Calculate cumulants in case we are allowing light particles only
       IF(MSSDEC.EQ.1)THEN
 C--Leptons (6 d.o.f. = 3*2*2 = #families * (particles + antiparticles)*2helicitystates.
@@ -2747,21 +2550,6 @@ C-------(same as for W but no factor of 2 because Z is not electrically charged)
          EPTOT=EF2S1*12.+EF2S1*6.+EF2S1*72.+EF2S2*16.+EF2S2*2.
      &+2*(EF2S0+2.*EF2S2)+(EF2S0+2.*EF2S2)
 C--All the standard model particles
-      ELSE IF(MSSDEC.EQ.5)THEN
-         
-         CFERMION(1)=0.
-         CFERMION(2)=CFERMION(1)+0.
-         CFERMION(3)=CFERMION(2)+F2S1*3*2*DSUM !TOP only 24.
-         CBOSON(1)=CFERMION(3)+F2S2*16*DGAUGE !GLUON
-         CBOSON(2)=CBOSON(1)+F2S2*2*DGAUGE
-         CBOSON(3)=CBOSON(2)+2*(F2S0+2.*F2S2)*DGAUGE
-         CBOSON(4)=CBOSON(3)+(F2S0+2.*F2S2)*DGAUGE
-         CBOSON(5)=CBOSON(4)+F2S0*DHIGGS
-         PTOT=CBOSON(5)
-         EPTOT=EF2S1*6*DSUM+EF2S2*16*DGAUGE+EF2S2*2*DGAUGE
-     &+2*(EF2S0+2.*EF2S2)*DGAUGE+(EF2S0+2.*EF2S2)*DGAUGE+EF2S0*DHIGGS
-
-C         WRITE(*,*) CBOSON(5),CBOSON(6)
 #if !defined (GINGRICH)
       ELSE
 #else
@@ -2804,8 +2592,7 @@ C--------Graviton.
          PTOT=CBOSON(6)
          EPTOT=EF2S1*12.+EF2S1*6.+EF2S1*72.+EF2S2*16.+EF2S2*2.
      &+2*(EF2S0+2.*EF2S2)+(EF2S0+2.*EF2S2)+EF2S0+EF2S4
-     
-#endif 
+#endif
       END IF
 
 C----Factor for the estimate of number of emissions in the remainder of the evaporation      
@@ -2841,26 +2628,9 @@ C--Neutrinos
          PT=12+2*INT(3*(PTYPE-CFERMION(1))/(CFERMION(2)-CFERMION(1)))
          IF(CHRLOG(0.5D0)) PT =-PT
       ELSEIF (PTYPE.LT.CFERMION(3)) THEN
-C--Quarksi---MODIFICATION------------------------------------------
+C--Quarks
          IF(MSSDEC.EQ.1)THEN
             PT=1+INT(5*(PTYPE-CFERMION(2))/(CFERMION(3)-CFERMION(2)))
-         ELSE IF(MSSDEC.EQ.5)THEN
-            IF(PTYPE.GT.CFERMION(2).AND.PTYPE.LE.WGTUP)THEN
-               PT=2
-            ELSEIF(PTYPE.GT.WGTUP.AND.PTYPE.LE.WGTCHM)THEN
-               PT=4           
-            ELSEIF(PTYPE.GT.WGTCHM.AND.PTYPE.LE.WGTTOP)THEN
-               PT=6
-            ELSEIF(PTYPE.GT.WGTTOP.AND.PTYPE.LE.WGTDWN)THEN
-               PT=1
-            ELSEIF(PTYPE.GT.WGTDWN.AND.PTYPE.LE.WGTSTR)THEN
-               PT=3
-            ELSEIF(PTYPE.GT.WGTSTR.AND.PTYPE.LE.WGTBTM)THEN
-               PT=5
-            ENDIF
-C-----------------------------------------------------------------
-
-
          ELSE
             PT=1+INT(6*(PTYPE-CFERMION(2))/(CFERMION(3)-CFERMION(2))) 
          END IF
@@ -2949,7 +2719,7 @@ C--Input/Output:
 C--Local variables
       INTEGER NTRY,IASTAR,K,MA,ME,MK0,MK1,MK2,UCFLUXKE,ITRY
       PARAMETER (MA=26,MK0=169,MK1=156,MK2=120,ME=100)
-      DOUBLE PRECISION ASTAR,CHRGEN, CFLUX2S0K(MK0+1,MA),
+      DOUBLE PRECISION ASTAR,CHRGEN,CFLUX2S0K(MK0+1,MA),
      &CFLUX2S1K(MK1+1,MA),CFLUX2S2K(MK2+1,MA),CFLUX2S0KE(ME+1,MK0,MA),
      &CFLUX2S1KE(ME+1,MK1,MA),CFLUX2S2KE(ME+1,MK2,MA),FRACDA,ASTARMAX,
      &EEMRH,EMAX
@@ -3018,7 +2788,7 @@ C-----Scalars
          ELSE IF(SPIN.EQ.1)THEN
 C-----Fermions
             CALL CHFINDK(CFLUX2S1K(1,IASTAR),CFLUX2S1K(1,IASTAR+1),MK1,
-     &ASTAR,FRACDA,K)
+     &ASTAR,FRACDA,K) 
             CALL CHFINDE(CFLUX2S1KE(1,K,IASTAR),CFLUX2S1KE(1,K,IASTAR+1)
      &,ME,ASTAR,FRACDA,MSEM*RH,EMAX*RH,CONVERGENCE,EEMRH)
             JEM=INT(SQRT(K-1D-2)-0.5D0)+0.5D0
