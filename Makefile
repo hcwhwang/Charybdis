@@ -42,12 +42,12 @@ PDFCHOICE = LHAPDF
 #
 ##LHAPDF example: 
 #LPDF   = -L/lha_pdf_instalation_path/lib/ -lLHAPDF
-LPDF   = -L/Users/ChanwookHwang/Work/LHAPDF/lib/ -lLHAPDF
-#LPDF   = -L/users/cwhwang/lhapdf/lib/ -lLHAPDF
+#LPDF   = -L/Users/ChanwookHwang/Work/LHAPDF/lib/ -lLHAPDF
+LPDF   = -L/users/cwhwang/lhapdf/lib/ -lLHAPDF
 #----------------------------------------------------------------------------
 # Set compiler
-#f77 = g77 -I.
-f77 = gfortran -I.
+f77 = g77 -I.
+#f77 = gfortran -I.
 #----------------------------------------------------------------------------
 #------END of user defined options (no need to change anything below)--------
 #----------------------------------------------------------------------------

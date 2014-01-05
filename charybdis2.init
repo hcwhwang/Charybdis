@@ -69,7 +69,7 @@ IBHPRN: (default is 1)
 ----- Model parameters and conventions -----
 --------------------------------------------
 TOTDIM: (default is 6)
-6
+5
 MPLNCK: (default is 1000.0)
 1000.0
 MSSDEF: (default is 3 -- PDG definition)
@@ -110,11 +110,11 @@ T
 BHANIS: (default is T)
 T
 GRYBDY: (default is T)
-F
+T
 TIMVAR: (default is T)
 T
 MSSDEC: (default is 3)
-5
+3
 RECOIL: (default is 2)
 2
 THWMAX: (default is 1000.0)
