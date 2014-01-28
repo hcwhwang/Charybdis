@@ -35,13 +35,13 @@ IDBMUP(1): (default is 2212)
 IDBMUP(2): (default is 2212)
 2212
 EBMUP(1): (default is 7000.0)
-7000.0
+4000.0
 EBMUP(2): (default is 7000.0)
-7000.0
+4000.0
 MINMSS: (default is 5000.0)
 5000.0
 MAXMSS: (default is 14000.0)
-14000.0
+8000.0
 PDFGUP(1): (Default depends on specific implementation)
 default
 PDFGUP(2): (Default depends on specific implementation)
@@ -52,7 +52,7 @@ LHAPDFSET: (default is 10000 -- needs to be set if you're using LHAPDF)
 ----- MC & OUTPUT -----
 -----------------------
 CHNMAXEV: (default is 100)
-1000
+10000
 NRN(1): (default is 245234)
 245234
 NRN(2): (default is 42542)
@@ -69,7 +69,7 @@ IBHPRN: (default is 1)
 ----- Model parameters and conventions -----
 --------------------------------------------
 TOTDIM: (default is 6)
-5
+6
 MPLNCK: (default is 1000.0)
 1000.0
 MSSDEF: (default is 3 -- PDG definition)
