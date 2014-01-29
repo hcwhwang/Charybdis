@@ -114,7 +114,7 @@ T
 TIMVAR: (default is T)
 T
 MSSDEC: (default is 3)
-5
+3
 RECOIL: (default is 2)
 2
 THWMAX: (default is 1000.0)
