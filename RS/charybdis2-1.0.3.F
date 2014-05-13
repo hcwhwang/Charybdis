@@ -573,7 +573,7 @@ C--Local Variables
       DOUBLE PRECISION ECMS,ONE,TWO,PIFAC,THREE,ZERO,
      &     CHRGEN,RPOW,A0,A1,EMJ,FACT,QSQ,HCS,PROB,W1,W2,W3,W4,
      &     TEMPFACTR,FACTR,RCS,BHPOW,DISF1,DISF2,OMEGAD,DL2GT,PSTEST,
-     $     CFACTOR(13,13),
+     $     CFACTOR(13,13),CFF(12,12),CGF(12),PI,
 #if !defined(GINGRICH)
      &     RHORSQ,PLPOW,MPFACT,PA(5),PB(5),PC(5),PCM,CHUPCM,PCMF(5),
 #else
@@ -584,9 +584,10 @@ C--Local Variables
      &     EEM,JEM,MEM,JNEW,MNEW,FREC,RTR,SSQ,SBH(3),RBH(3),
      &     ROT(3,3),PEM(5),QBH(4),FMAXEM,BHMFR,BHJFR,BFR,MBHFINALSQ,
      &     NAVERAGE,NFACTOR,TOTFLUX,JEMNBODY(21),MEMNBODY(21),
-     &     JINTRINSIC,MINTRINSIC,BHJ,ASTARPREVIOUS,BSTNEW,BSTNOW
+     &     JINTRINSIC,MINTRINSIC,BHJ,ASTARPREVIOUS,BSTNEW,BSTNOW,
+     &     NU(12),KL
       INTEGER IBARYN,IQRK(MAXPUP),IGLU(MAXPUP),IQBR(MAXPUP),MTRY,
-     &     NQRK,NGLU,NQBR,JQRK,JGLU,JQBR,J,ISTART,CHST,ILINE,
+     &     NQRK,NGLU,NQBR,JQRK,JGLU,JQBR,J,ISTART,CHST,ILINE,P,Q,
      &     IP,IQ,PT,I,BHCHRG,IDN(2),NTRY,NHTRY,SAVCHR,SAVBRN,ID(21),
      &     MHTRY,LTRY,LHTRY,CHFCHG,SPIN,FSPIN(21),NEX,NBODYNOW,
      &     STATNBODY,POLARIZ,FPOLARIZ(21),ILEPTON(0:3),SAVLEPTON(0:3)
@@ -605,7 +606,8 @@ C--Yoshino-Rychkov factors for c-s and Jmax
 C  from Phys.Rev.D71:104028,2005 [hep-th/0503171]
       DATA YRF/1.54,2.15,2.52,2.77,2.95,3.09,3.20/
       DATA CYR/0.42d0,0.62d0,0.73d0,0.79d0,0.83d0,0.86d0,0.88d0,0.89d0/
-
+      DATA NU/-0.579,-0.579,-0.517,-0.517,-0.473,-0.473,
+     &     -0.711,-0.742,-0.666,-0.558,-0.533,0.339/
 C-----------------------------------------------------------------------
 C                             INITIALISATION
 C-----------------------------------------------------------------------
@@ -701,89 +703,63 @@ C--Include Yoshino-Rychkov factor & spin
 C-----MODIFICATION----------------------------------------------------------------
       ELSE 
         FACT=FACT*4D0*(1D0/(1D0+((TOTDIM-2)/2D0)**2))**(2D0/(TOTDIM-3))
+      ENDIF
 C--------------------------------------------------------------------------------
 
 
 
+C-----MODIFICATION----------------------------------------------------------------
+      PI=ACOS(-1D0)
+      KL=11.3D0*PI
 
+      DO I=1,12
+         DO J=1,12
+            CFF(I,J)=((1+2*NU(I))*(1+2*NU(J)))**0.5
+            CFF(I,J)=CFF(I,J)*EXP(KL*(1+NU(I)+NU(J)))/(3+NU(I)+NU(J))
+            CFF(I,J)=CFF(I,J)/(EXP(KL*(1+2*NU(I)))-1)**0.5
+            CFF(I,J)=CFF(I,J)/(EXP(KL*(1+2*NU(J)))-1)**0.5
+         ENDDO
+      ENDDO
+      
+      DO I=1,12
+         CGF(I)=(1+2*NU(I))**0.5*EXP(KL*(NU(I)+0.5))/KL**0.5/(NU(I)+2.5)
+         CGF(I)=CGF(I)/(EXP(KL*(1+2*NU(I)))-1)**0.5
+      ENDDO
 
-      ENDIF
 C--Save C-factor values---------
       IF (.NOT.HVYQONLY) THEN
-         CFACTOR(1,1)=8.14536D-5    
-         CFACTOR(1,2)=8.06258D-5      
-         CFACTOR(1,3)=0.000393687      
-         CFACTOR(1,4)=0.000391965     
-         CFACTOR(1,5)=0.000807906     
-         CFACTOR(1,13)=0.00107013      
-         CFACTOR(2,2)=7.98065D-5     
-         CFACTOR(2,3)=0.000528489     
-         CFACTOR(2,4)=0.000665558     
-         CFACTOR(2,5)=0.00387594     
-         CFACTOR(2,13)=0.00105928      
-         CFACTOR(3,3)=0.001898     
-         CFACTOR(3,4)=0.00256642     
-         CFACTOR(3,5)=0.0038955     
-         CFACTOR(3,13)=0.0051701      
-         CFACTOR(4,4)=0.0034703     
-         CFACTOR(4,5)=0.0193658
-         CFACTOR(4,13)=0.00699052
-         CFACTOR(5,5)=0.0138953
-         CFACTOR(5,13)=0.0139894
-         CFACTOR(13,13)=0.0140845
-      ELSEIF (HVYQONLY) THEN
-         CFACTOR(1,1)=0.    
-         CFACTOR(1,2)=0.    
-         CFACTOR(1,3)=0.     
-         CFACTOR(1,4)=0.     
-         CFACTOR(1,5)=0.    
-         CFACTOR(1,13)=0.     
-         CFACTOR(2,2)=0.     
-         CFACTOR(2,3)=0.     
-         CFACTOR(2,4)=0.     
-         CFACTOR(2,5)=0.     
-         CFACTOR(2,13)=0.      
-         CFACTOR(3,3)=0.     
-         CFACTOR(3,4)=0.     
-         CFACTOR(3,5)=0.     
-         CFACTOR(3,13)=0.      
-         CFACTOR(4,4)=0.     
-         CFACTOR(4,5)=0.
-         CFACTOR(4,13)=0.
-         CFACTOR(5,5)=0.0138953
-         CFACTOR(5,13)=0.0139894
-         CFACTOR(13,13)=0.0140845
+         DO P=1,13
+            DO Q=1,13
+               IF(P.LE.6.AND.Q.LE.6) THEN
+                  CFACTOR(P,Q)=0.5*0.5*CFF(I,J) !(L,L)
+                  CFACTOR(P,Q)=CFACTOR(P,Q)+0.5*0.5*CFF(P,Q+6)!(L,R)
+                  CFACTOR(P,Q)=CFACTOR(P,Q)+0.5*0.5*CFF(P+6,Q)!(R,L)
+                  CFACTOR(P,Q)=CFACTOR(P,Q)+0.5*0.5*CFF(P+6,Q+6)!(R,R)
+               ELSEIF(P.LE.6.AND.Q.GE.7.AND.Q.LE.12) THEN
+                  CFACTOR(P,Q)=CFACTOR(P,Q-6)
+               ELSEIF(Q.LE.6.AND.P.GE.7.AND.P.LE.12) THEN
+                  CFACTOR(P,Q)=CFACTOR(P-6,Q)
+               ELSEIF(P.GE.7.AND.P.LE.12.AND.Q.GE.7.AND.Q.LE.12) THEN
+                  CFACTOR(P,Q)=CFACTOR(P-6,Q-6)
+               ELSEIF(P.LE.6.AND.Q.EQ.13) THEN
+                  CFACTOR(P,Q)=0.5*CGF(I) !(L)
+                  CFACTOR(P,Q)=CFACTOR(P,Q)+0.5*CGF(I+6) !(R)
+               ELSEIF(P.GE.7.AND.P.LE.12.AND.Q.EQ.13) THEN
+                  CFACTOR(P,Q)=CFACTOR(P-6,Q)
+               ELSEIF(P.EQ.13.AND.Q.EQ.13) THEN
+                  CFACTOR(P,Q)=CFACTOR(Q,P)
+               ELSEIF(P.EQ.13.AND.Q.LE.12) THEN
+                  CFACTOR(P,Q)=1/71D0
+               ENDIF
+            ENDDO
+         ENDDO
       ENDIF
+c--------------------------------------------------------------------
       DO IP=1,13
          DO IQ=1,13
-            IF (IP.GT.IQ) THEN
-               CFACTOR(IP,IQ)=CFACTOR(IQ,IP)
-            ENDIF
-            IF (IP.EQ.6.OR.IQ.EQ.6) THEN
-               CFACTOR(IP,IQ)=0.
-            ENDIF
+            WRITE(*,*) IP, IQ, CFACTOR(IP,IQ)
          ENDDO
       ENDDO
-      DO IP=1,13
-         DO IQ=1,13
-            IF(IP.GT.6.AND.IP.LT.13.AND.IQ.LE.6) THEN
-               CFACTOR(IP,IQ)=CFACTOR(IP-6,IQ)
-            ELSEIF(IP.LE.6.AND.IQ.GT.6.AND.IQ.LT.13) THEN
-               CFACTOR(IP,IQ)=CFACTOR(IP,IQ-6)
-            ELSEIF(IP.GT.6.AND.IP.LT.13.AND.IQ.GT.6.AND.IQ.LT.13) THEN
-               CFACTOR(IP,IQ)=CFACTOR(IP-6,IQ-6)
-            ELSEIF(IP.EQ.13.AND.IQ.GT.6.AND.IQ.LT.13) THEN
-               CFACTOR(IP,IQ)=CFACTOR(IP,IQ-6)
-            ELSEIF(IQ.EQ.13.AND.IP.GT.6.AND.IP.LT.13) THEN
-               CFACTOR(IP,IQ)=CFACTOR(IP-6,IQ)
-            ENDIF
-         ENDDO
-      ENDDO
-C      DO IP=1,13
-C         DO IQ=1,13
-C            WRITE(*,*) IP, IQ, CFACTOR(IP,IQ)
-C         ENDDO
-C      ENDDO
 
 C--Change momentum scale for calling pdfs (see comment above)
       IF (GTSCA) EMSCA=1/SQRT(RHORSQ)
