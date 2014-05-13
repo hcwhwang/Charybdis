@@ -715,6 +715,7 @@ C-----MODIFICATION--------------------------------------------------------------
       DO I=1,12
          DO J=1,12
             CFF(I,J)=((1+2*NU(I))*(1+2*NU(J)))**0.5
+            WRITE(*,*) I,J,CFF(I,J)
             CFF(I,J)=CFF(I,J)*EXP(KL*(1+NU(I)+NU(J)))/(3+NU(I)+NU(J))
             CFF(I,J)=CFF(I,J)/(EXP(KL*(1+2*NU(I)))-1)**0.5
             CFF(I,J)=CFF(I,J)/(EXP(KL*(1+2*NU(J)))-1)**0.5
@@ -746,20 +747,20 @@ C--Save C-factor values---------
                   CFACTOR(P,Q)=CFACTOR(P,Q)+0.5*CGF(I+6) !(R)
                ELSEIF(P.GE.7.AND.P.LE.12.AND.Q.EQ.13) THEN
                   CFACTOR(P,Q)=CFACTOR(P-6,Q)
-               ELSEIF(P.EQ.13.AND.Q.EQ.13) THEN
-                  CFACTOR(P,Q)=CFACTOR(Q,P)
                ELSEIF(P.EQ.13.AND.Q.LE.12) THEN
+                  CFACTOR(P,Q)=CFACTOR(Q,P)
+               ELSEIF(P.EQ.13.AND.Q.EQ.13) THEN
                   CFACTOR(P,Q)=1/71D0
                ENDIF
             ENDDO
          ENDDO
       ENDIF
 c--------------------------------------------------------------------
-      DO IP=1,13
-         DO IQ=1,13
-            WRITE(*,*) IP, IQ, CFACTOR(IP,IQ)
-         ENDDO
-      ENDDO
+C      DO IP=1,6
+C         DO IQ=1,6
+C            WRITE(*,*) IP, IQ, CFACTOR(IP,IQ)
+C         ENDDO
+C      ENDDO
 
 C--Change momentum scale for calling pdfs (see comment above)
       IF (GTSCA) EMSCA=1/SQRT(RHORSQ)
