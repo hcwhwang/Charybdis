@@ -597,7 +597,7 @@ C--Local Variables
       PARAMETER(MHTRY=20,LHTRY=200,GEV2PB=389379.D3)
       SAVE HCS,BHPOW,PLPOW,RPOW,A0,A1,FACT,MPFACT,PIFAC,NEX
       DATA FIRST/.TRUE./
-      DATA HVYQONLY /.TRUE./
+      DATA HVYQONLY /.FALSE./
 #if defined(GINGRICH)
       DOUBLE PRECISION THRESH,BRECOIL
       INTEGER BHBARY,CHST2
@@ -606,8 +606,11 @@ C--Yoshino-Rychkov factors for c-s and Jmax
 C  from Phys.Rev.D71:104028,2005 [hep-th/0503171]
       DATA YRF/1.54,2.15,2.52,2.77,2.95,3.09,3.20/
       DATA CYR/0.42d0,0.62d0,0.73d0,0.79d0,0.83d0,0.86d0,0.88d0,0.89d0/
+C------------MODIFICATION----------------------------------------------
       DATA NU/-0.579,-0.579,-0.517,-0.517,-0.473,-0.473,
      &     -0.711,-0.742,-0.666,-0.558,-0.533,0.339/
+C------------L : D, U, S, C, B, T
+C------------R : D, U, S, C, B, T (include -sign)
 C-----------------------------------------------------------------------
 C                             INITIALISATION
 C-----------------------------------------------------------------------
@@ -714,17 +717,19 @@ C-----MODIFICATION--------------------------------------------------------------
 
       DO I=1,12
          DO J=1,12
-            CFF(I,J)=((1+2*NU(I))*(1+2*NU(J)))**0.5
-            WRITE(*,*) I,J,CFF(I,J)
-            CFF(I,J)=CFF(I,J)*EXP(KL*(1+NU(I)+NU(J)))/(3+NU(I)+NU(J))
-            CFF(I,J)=CFF(I,J)/(EXP(KL*(1+2*NU(I)))-1)**0.5
-            CFF(I,J)=CFF(I,J)/(EXP(KL*(1+2*NU(J)))-1)**0.5
+            CFF(I,J)=((1+2*NU(I))/(EXP(KL*(1+2*NU(I)))-1))**0.5
+            CFF(I,J)=CFF(I,J)*((1+2*NU(J))/(EXP(KL*(1+2*NU(J)))-1))**0.5
+            CFF(I,J)=CFF(I,J)*(EXP(KL*(1+NU(I)+NU(J)))-EXP(-2*KL))
+            CFF(I,J)=CFF(I,J)/(3+NU(I)+NU(J))
+C            WRITE(*,*) I,J,CFF(I,J)
          ENDDO
       ENDDO
       
       DO I=1,12
-         CGF(I)=(1+2*NU(I))**0.5*EXP(KL*(NU(I)+0.5))/KL**0.5/(NU(I)+2.5)
-         CGF(I)=CGF(I)/(EXP(KL*(1+2*NU(I)))-1)**0.5
+         CGF(I)=((1+2*NU(I))/(EXP(KL*(1+2*NU(I)))-1))**0.5
+         CGF(I)=CGF(I)*(EXP(KL*(NU(I)+0.5))-EXP(-2*KL))
+         CGF(I)=CGF(I)/(KL**0.5)/(NU(I)+2.5)
+C         WRITE(*,*) I,CGF(I)
       ENDDO
 
 C--Save C-factor values---------
@@ -732,7 +737,7 @@ C--Save C-factor values---------
          DO P=1,13
             DO Q=1,13
                IF(P.LE.6.AND.Q.LE.6) THEN
-                  CFACTOR(P,Q)=0.5*0.5*CFF(I,J) !(L,L)
+                  CFACTOR(P,Q)=0.5*0.5*CFF(P,Q) !(L,L)
                   CFACTOR(P,Q)=CFACTOR(P,Q)+0.5*0.5*CFF(P,Q+6)!(L,R)
                   CFACTOR(P,Q)=CFACTOR(P,Q)+0.5*0.5*CFF(P+6,Q)!(R,L)
                   CFACTOR(P,Q)=CFACTOR(P,Q)+0.5*0.5*CFF(P+6,Q+6)!(R,R)
@@ -756,11 +761,11 @@ C--Save C-factor values---------
          ENDDO
       ENDIF
 c--------------------------------------------------------------------
-C      DO IP=1,6
-C         DO IQ=1,6
-C            WRITE(*,*) IP, IQ, CFACTOR(IP,IQ)
-C         ENDDO
-C      ENDDO
+      DO IP=1,13
+         DO IQ=1,13
+            WRITE(*,*) IP, IQ, CFACTOR(IP,IQ)
+         ENDDO
+      ENDDO
 
 C--Change momentum scale for calling pdfs (see comment above)
       IF (GTSCA) EMSCA=1/SQRT(RHORSQ)
@@ -2548,7 +2553,9 @@ C-----MODIFICATION-----------------------------------------------------
       DOUBLE PRECISION DSUM, KL
       DOUBLE PRECISION WGTUP,WGTCHM,WGTTOP,WGTDWN,WGTSTR,WGTBTM
       PARAMETER(MA=26,MSPIN=3)
-      DOUBLE PRECISION  DFERMIONL(6), DFERMIONR(6)
+      DOUBLE PRECISION  NU(12),DFERMIONL(6), DFERMIONR(6)
+      DATA NU/-0.579,-0.579,-0.517,-0.517,-0.473,-0.473,
+     &     -0.711,-0.742,-0.666,-0.558,-0.533,0.339/
       DATA DFERMIONL /0.0006851,0.0150148,0.0600244,0.0006851,
      &0.0150148,0.0600244/
       DATA DFERMIONR / 2.9D-8, 0.0021630, 0.4961677, 2.1D-7, 3.6D-6,
