@@ -763,7 +763,7 @@ C--Save C-factor values---------
 c--------------------------------------------------------------------
       DO IP=1,13
          DO IQ=1,13
-            WRITE(*,*) IP, IQ, CFACTOR(IP,IQ)
+C            WRITE(*,*) IP, IQ, CFACTOR(IP,IQ)
          ENDDO
       ENDDO
 
@@ -2549,20 +2549,16 @@ C--Local variables
 
 
 C-----MODIFICATION-----------------------------------------------------
-      INTEGER CHFCHG,UFLUX,UEFLUX,MA,MSPIN,IASTAR,INDX
+      INTEGER CHFCHG,UFLUX,UEFLUX,MA,MSPIN,IASTAR,INDX,I
       DOUBLE PRECISION DSUM, KL
       DOUBLE PRECISION WGTUP,WGTCHM,WGTTOP,WGTDWN,WGTSTR,WGTBTM
       PARAMETER(MA=26,MSPIN=3)
-      DOUBLE PRECISION  NU(12),DFERMIONL(6), DFERMIONR(6)
+      DOUBLE PRECISION  NU(12),DFACTORF(12),DFACTORG,DFACTORH,DFACTORSUM
       DATA NU/-0.579,-0.579,-0.517,-0.517,-0.473,-0.473,
      &     -0.711,-0.742,-0.666,-0.558,-0.533,0.339/
-      DATA DFERMIONL /0.0006851,0.0150148,0.0600244,0.0006851,
-     &0.0150148,0.0600244/
-      DATA DFERMIONR / 2.9D-8, 0.0021630, 0.4961677, 2.1D-7, 3.6D-6,
-     &0.0028090/
 
       DOUBLE PRECISION PTYPE,CHRGEN,FLUX(MSPIN,MA),CFERMION(3),
-     &DGAUGE,DHIGGS,PI
+     &PI
 C----------------------------------------------------------------------
 
 
@@ -2665,28 +2661,24 @@ C-----MODIFICATION----------------------------------------------------
       PI=ACOS(-1D0)
       KL=11.3D0*PI
 C      WRITE(*,*) BMASS,MPLNCK
+      DFACTORSUM=0
+      DO I=1,12
+         DFACTORF(I)=4*(1+2*NU(I))/(3+2*NU(I))**2
+         DFACTORF(I)=DFACTORF(I)*EXP(-2*KL)
+         DFACTORF(I)=DFACTORF(I)*(EXP(KL*(1.5+NU(I)))-1)**2
+         DFACTORF(I)=DFACTORF(I)/(-1+EXP(KL*(1+2*NU(I))))
+C         WRITE(*,*) I, DFACTORF(I)
+         DFACTORSUM=DFACTORSUM+DFACTORF(I)
+      ENDDO
+      DFACTORG=0.028169
+      DFACTORH=1D0
 
-C-----Left handed-----------------------------------------------------
-      DSUM=0D0
-      DO 1 INDX=1,6
-         DSUM=DSUM+DFERMIONL(INDX)
-C         WRITE(*,*) INDX,DFERMION(INDX)
- 1    CONTINUE
-
-C-----Right handed---------------------------------------------------     
-      DO 2 INDX=1,6
-         DSUM=DSUM+DFERMIONR(INDX)
-C         WRITE(*,*) INDX,DFERMION(INDX)
- 2    CONTINUE      
-      WGTUP=F2S1*6*(DFERMIONL(1)+DFERMIONR(1))
-      WGTCHM=WGTUP+F2S1*6*(DFERMIONL(2)+DFERMIONR(2))
-      WGTTOP=WGTCHM+F2S1*6*(DFERMIONL(3)+DFERMIONR(3))
-      WGTDWN=WGTTOP+F2S1*6*(DFERMIONL(4)+DFERMIONR(4))
-      WGTSTR=WGTDWN+F2S1*6*(DFERMIONL(5)+DFERMIONR(5))
-      WGTBTM=WGTSTR+F2S1*6*(DFERMIONL(6)+DFERMIONR(6))
-
-      DGAUGE=0.0281690
-      DHIGGS=1D0     
+      WGTDWN=F2S1*6*(DFACTORF(1)+DFACTORF(7)) !d quark (L,R)  
+      WGTUP=WGTDWN+F2S1*6*(DFACTORF(2)+DFACTORF(8)) !u quark (L,R)  
+      WGTSTR=WGTUP+F2S1*6*(DFACTORF(3)+DFACTORF(9)) !s quark (L,R)  
+      WGTCHM=WGTSTR+F2S1*6*(DFACTORF(4)+DFACTORF(10)) !c quark (L,R)  
+      WGTBTM=WGTCHM+F2S1*6*(DFACTORF(5)+DFACTORF(11)) !b quark (L,R)  
+      WGTTOP=WGTBTM+F2S1*6*(DFACTORF(6)+DFACTORF(12)) !t quark (L,R)  
 C---------------------------------------------------------------------
 
 
@@ -2735,15 +2727,16 @@ C--All the standard model particles
          
          CFERMION(1)=0.
          CFERMION(2)=CFERMION(1)+0.
-         CFERMION(3)=CFERMION(2)+F2S1*3*2*DSUM !TOP only 24.
-         CBOSON(1)=CFERMION(3)+F2S2*16*DGAUGE !GLUON
-         CBOSON(2)=CBOSON(1)+F2S2*2*DGAUGE
-         CBOSON(3)=CBOSON(2)+2*(F2S0+2.*F2S2)*DGAUGE
-         CBOSON(4)=CBOSON(3)+(F2S0+2.*F2S2)*DGAUGE
-         CBOSON(5)=CBOSON(4)+F2S0*DHIGGS
+         CFERMION(3)=CFERMION(2)+F2S1*3*2*DFACTORSUM !TOP only 24.
+         CBOSON(1)=CFERMION(3)+F2S2*16*DFACTORG !GLUON
+         CBOSON(2)=CBOSON(1)+F2S2*2*DFACTORG
+         CBOSON(3)=CBOSON(2)+2*(F2S0+2.*F2S2)*DFACTORG
+         CBOSON(4)=CBOSON(3)+(F2S0+2.*F2S2)*DFACTORG
+         CBOSON(5)=CBOSON(4)+F2S0*DFACTORH
          PTOT=CBOSON(5)
-         EPTOT=EF2S1*6*DSUM+EF2S2*16*DGAUGE+EF2S2*2*DGAUGE
-     &+2*(EF2S0+2.*EF2S2)*DGAUGE+(EF2S0+2.*EF2S2)*DGAUGE+EF2S0*DHIGGS
+         EPTOT=EF2S1*6*DFACTORSUM+EF2S2*16*DFACTORG+EF2S2*2*DFACTORG
+     &+2*(EF2S0+2.*EF2S2)*DFACTORG+(EF2S0+2.*EF2S2)*DFACTORG
+     &+EF2S0*DFACTORH
 
 C         WRITE(*,*) CBOSON(5),CBOSON(6)
 #if !defined (GINGRICH)
@@ -2829,18 +2822,18 @@ C--Quarksi---MODIFICATION------------------------------------------
          IF(MSSDEC.EQ.1)THEN
             PT=1+INT(5*(PTYPE-CFERMION(2))/(CFERMION(3)-CFERMION(2)))
          ELSE IF(MSSDEC.EQ.5)THEN
-            IF(PTYPE.GT.CFERMION(2).AND.PTYPE.LE.WGTUP)THEN
-               PT=2
-            ELSEIF(PTYPE.GT.WGTUP.AND.PTYPE.LE.WGTCHM)THEN
-               PT=4           
-            ELSEIF(PTYPE.GT.WGTCHM.AND.PTYPE.LE.WGTTOP)THEN
-               PT=6
-            ELSEIF(PTYPE.GT.WGTTOP.AND.PTYPE.LE.WGTDWN)THEN
+            IF(PTYPE.GT.CFERMION(2).AND.PTYPE.LE.WGTDWN)THEN
                PT=1
-            ELSEIF(PTYPE.GT.WGTDWN.AND.PTYPE.LE.WGTSTR)THEN
+            ELSEIF(PTYPE.GT.WGTDWN.AND.PTYPE.LE.WGTUP)THEN
+               PT=2           
+            ELSEIF(PTYPE.GT.WGTUP.AND.PTYPE.LE.WGTSTR)THEN
                PT=3
-            ELSEIF(PTYPE.GT.WGTSTR.AND.PTYPE.LE.WGTBTM)THEN
+            ELSEIF(PTYPE.GT.WGTSTR.AND.PTYPE.LE.WGTCHM)THEN
+               PT=4
+            ELSEIF(PTYPE.GT.WGTCHM.AND.PTYPE.LE.WGTBTM)THEN
                PT=5
+            ELSEIF(PTYPE.GT.WGTBTM.AND.PTYPE.LE.WGTTOP)THEN
+               PT=6
             ENDIF
 C-----------------------------------------------------------------
 
