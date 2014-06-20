@@ -664,7 +664,6 @@ C-------Some powers appearing in the expressions for the Horizon radius
 C-----------------------------------------------------------------------
 C                              PRODUCTION
 C-----------------------------------------------------------------------
-
 C--Select parton-parton invariant mass
 C---Centre of mass energy
       ECMS = TWO*SQRT(EBMUP(1)*EBMUP(2))
@@ -721,7 +720,7 @@ C-----MODIFICATION--------------------------------------------------------------
             CFF(I,J)=CFF(I,J)*((1+2*NU(J))/(EXP(KL*(1+2*NU(J)))-1))**0.5
             CFF(I,J)=CFF(I,J)*(EXP(KL*(1+NU(I)+NU(J)))-EXP(-2*KL))
             CFF(I,J)=CFF(I,J)/(3+NU(I)+NU(J))
-            WRITE(*,*) I,J,CFF(I,J)
+C           WRITE(*,*) I,J,CFF(I,J)
          ENDDO
       ENDDO
       
@@ -1497,7 +1496,9 @@ C--Stable remnant model -- only B=0 allowed
             PRINT *,'CHEVNT: BAD REMNANT CHARGE = ',BHCHRG
             GOTO 35
          ENDIF
-         ISTUP(NUP)=2      
+C----------MODIFICATION---------------------------------
+         ISTUP(NUP)=1 !default is 1     
+C----------MODIFICATION---------------------------------
          MOTHUP(1,NUP) = 1
          MOTHUP(2,NUP) = 2
          NBODYNOW=0
@@ -1536,7 +1537,9 @@ C--record with 0 kinematics to conserve baryon number.
         PUP(3,NUP) = 0.0
         PUP(4,NUP) = 0.0
         PUP(5,NUP) = 0.0
-        ISTUP(NUP) = 2
+C----------MODIFICATION---------------------------------
+        ISTUP(NUP) = 1
+C----------MODIFICATION---------------------------------
         MOTHUP(1,NUP) = 1
         MOTHUP(2,NUP) = 2
         IF (IBARYN .EQ. 0) THEN
@@ -1567,7 +1570,9 @@ C--for |B|>1
           BHCHRG = BHCHRG - CHFCHG(-1)
           IBARYN = IBARYN - 1
           BHBARY = BHBARY + 1
-          ISTUP(NUP) = 2
+C----------MODIFICATION---------------------------------
+          ISTUP(NUP) = 1
+C----------MODIFICATION---------------------------------
           MOTHUP(1,NUP) = 1
           MOTHUP(2,NUP) = 2
         ELSEIF (IBARYN .EQ. -2) THEN
@@ -1609,6 +1614,7 @@ c--------Select decay products
          CALL CHSELECT(ID(I),FSPIN(I),BHCHRG,OBLA,RH,NEX,
      &NFACTOR,TOTFLUX,BHBARY)
 #endif
+C         WRITE(*,*) ID(I)
          IF(ABS(ID(I)).LE.6) THEN
             IBARYN = IBARYN+SIGN(1,ID(I))
          ENDIF
@@ -1659,7 +1665,9 @@ C--Perform the NBODY decay of the remnant
 C------Put particle properties in the Les houches common block
          PUP(5,NUP+I) = CHFMAS(ID(I))
          PSTEST=PSTEST-PUP(5,NUP+I)
-         ISTUP(NUP+I) = 2
+C----------MODIFICATION---------------------------------
+         ISTUP(NUP+I) = 1
+C----------MODIFICATION---------------------------------
          IDUP(NUP+I) = ID(I)
          MOTHUP(1,NUP+I) = 1
          MOTHUP(2,NUP+I) = 2
@@ -2891,6 +2899,7 @@ C        SPIN=0 Higgs, SPIN=1 fermions, SPIN=2 vector bosons.
         stop
 #endif
       ENDIF
+C      WRITE(*,*) PT, CHFCHG(PT)
 C--Calculate new charge of BH
       BHCHRG=BHCHRG-CHFCHG(PT)
 #if defined(GINGRICH)
@@ -3017,7 +3026,6 @@ C------Get out of the loop if CONVERGENCE=.TRUE.
       EEMRH=RH*(MSEM+CHRGEN(1)*(EMAX-MSEM))
  6    CONTINUE
       EEM=EEMRH/RH
-
       END
 
 CDECK  ID>, CHNOGRYBDY

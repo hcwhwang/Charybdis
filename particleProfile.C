@@ -139,7 +139,7 @@ void particleProfile()
       fCfactorFF->SetParameters(fermionPar1[i], fermionPar2[i], fermionPar1[j], fermionPar2[j]);
       const double cxx = fCfactorFF->Integral(minL, maxL);
 
-      if ( (i == 2 or i == 8) and (j == 2 or j == 8) ) cbb += cxx;
+//      if ( (i == 2 or i == 8) and (j == 2 or j == 8) ) cbb += cxx;
       else if ( (i == 2 or i == 8) or (j == 2 or j == 8) ) cbl += cxx;
       else cll += cxx;
       cout << Form("%s%s ", fermionNames[i], fermionNames[j]) << cxx << endl;

@@ -22,19 +22,23 @@ void data()
   }
   flux.close();
 
-  ifstream fluxke("data_files/cfluxke_n2.dat");
-  TGraph* CFLUX2S0K = new TGraph(); 
+  ifstream fluxke("data_files/cfluxke_n3.dat");
+  TGraph* CFLUX2S0K = new TGraph();
+  CFLUX2S0K->SetTitle("Scalar Flux;K;Flux"); 
   TGraph* CFLUX2S1K = new TGraph(); 
   TGraph* CFLUX2S2K = new TGraph(); 
-  for(int ma=1; ma <= 26; ++ma)
+  for(int ma=0; ma <= 25; ++ma)
   { 
-    for(int k=1; k <=170;++k)
+    for(int k=0; k <=169;++k)
     {
-      
       fluxke >> dummy;
-      if(k==MK0) cfluxke = dummy;
+      if(ma==0) 
+      {
+        cfluxke = dummy;
+        cout << k << "  " << cfluxke << endl;
+        CFLUX2S0K->SetPoint(k,k,cfluxke);
+      }
     }
-    CFLUX2S0K->SetPoint(ma-1,ma,cfluxke);
   }
   for(int ma=1; ma <= 26; ++ma)
   { 
