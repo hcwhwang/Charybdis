@@ -1,6 +1,6 @@
 void data()
 {
-  ifstream flux("data_files/flux_n1.dat");
+  ifstream flux("data_files/flux_n2.dat");
   TGraph* g1 = new TGraph();
   TGraph* g2 = new TGraph();
   TGraph* g3 = new TGraph();
@@ -8,57 +8,67 @@ void data()
   double f1,f2,f3;
   double cfluxke,dummy;
   int i=0;
-  int MK0 = 3;
-  int MK1 = 3;
-  int MK2 = 3;
+  int a1 = 5;
+  int a2 = 3;
+  int a3 = 3;
   int ME = 4;
   while(!flux.eof())
   {
     flux >> f1 >> f2 >> f3;
-    g1->SetPoint(i,i+1,f1);
-    g2->SetPoint(i,i+1,f2);
-    g3->SetPoint(i,i+1,f3);
+    g1->SetPoint(i,i*5./26.,f1);
+    g1->SetTitle("Scalar Number Flux;a*;Number Flux");
+    g2->SetPoint(i,i*5./26.,f2);
+    g2->SetTitle("Spinor Number Flux;a*;Number Flux");
+    g3->SetPoint(i,i*5./26.,f3);
+    g3->SetTitle("Vector Number Flux;a*;Number Flux");
     ++i;
   }
   flux.close();
 
-  ifstream fluxke("data_files/cfluxke_n3.dat");
+  ifstream fluxke("data_files/cfluxke_n2.dat");
   TGraph* CFLUX2S0K = new TGraph();
-  CFLUX2S0K->SetTitle("Scalar Flux;K;Flux"); 
+  CFLUX2S0K->SetTitle(Form("Scalar Flux a* = %f;K;Flux",1./5.*a1)); 
   TGraph* CFLUX2S1K = new TGraph(); 
+  CFLUX2S1K->SetTitle(Form("Spinor Flux a* = %f;K;Flux",1./5.*a2)); 
   TGraph* CFLUX2S2K = new TGraph(); 
+  CFLUX2S2K->SetTitle(Form("Vector Flux a* = %f;K;Flux",1./5.*a3)); 
   for(int ma=0; ma <= 25; ++ma)
   { 
-    for(int k=0; k <=169*2;++k)
+    for(int k=0; k <=169;++k)
     {
       fluxke >> dummy;
-      if(ma==0 || ma==1) 
+      if(ma==a1 && k != 169) 
       {
         cfluxke = dummy;
-        cout << k << "  " << cfluxke << endl;
-        CFLUX2S0K->SetPoint(k,k,cfluxke);
+        CFLUX2S0K->SetPoint(k,k+1,cfluxke);
       }
     }
   }
-  for(int ma=1; ma <= 26; ++ma)
+  for(int ma=0; ma <= 25; ++ma)
   { 
-    for(int k=1; k <=157;++k)
+    for(int k=0; k <=156;++k)
     {
       fluxke >> dummy;
-      if(k==MK1) cfluxke = dummy;
+      if(ma==a2 && k != 156) 
+      {
+        cfluxke = dummy;
+        CFLUX2S1K->SetPoint(k,k+1,cfluxke);
+      }
     }
-    CFLUX2S1K->SetPoint(ma-1,ma,cfluxke);
   }
-  for(int ma=1; ma <= 26; ++ma)
+  for(int ma=0; ma <= 25; ++ma)
   { 
-    for(int k=1; k <=121;++k)
+    for(int k=0; k <=120;++k)
     {
       fluxke >> dummy;
-      if(k==MK2) cfluxke = dummy;
+      if(ma==a3 && k != 120) 
+      {
+        cfluxke = dummy;
+        CFLUX2S2K->SetPoint(k,k+1,cfluxke);
+      }
     }
-    CFLUX2S2K->SetPoint(ma-1,ma,cfluxke);
   }
-  TGraph *CFLUX2S0KE = new TGraph();
+/*  TGraph *CFLUX2S0KE = new TGraph();
   TGraph *CFLUX2S1KE = new TGraph();
   TGraph *CFLUX2S2KE = new TGraph();
   
@@ -99,7 +109,7 @@ void data()
     CFLUX2S2KE->SetPoint(ma-1,ma,cfluxke);
   }
   fluxke.close();
-  
+*/  
   g1->SetLineColor(kRed);
   g2->SetLineColor(kBlue);
   g3->SetLineColor(kGreen);
@@ -125,12 +135,12 @@ void data()
   CFLUX2S1K->Draw("ALP"); 
   TCanvas *c4 = new TCanvas("c4","c4",500,500);
   CFLUX2S2K->Draw("ALP"); 
-  TCanvas *c5 = new TCanvas("c5","c5",500,500);
+/*  TCanvas *c5 = new TCanvas("c5","c5",500,500);
   CFLUX2S0KE->Draw("ALP");
   TCanvas *c6 = new TCanvas("c6","c6",500,500);
   CFLUX2S1KE->Draw("ALP");
   TCanvas *c7 = new TCanvas("c7","c7",500,500);
   CFLUX2S2KE->Draw("ALP");
-  
+*/  
   
 }
