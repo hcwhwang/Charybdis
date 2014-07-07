@@ -29,10 +29,10 @@ void data()
   TGraph* CFLUX2S2K = new TGraph(); 
   for(int ma=0; ma <= 25; ++ma)
   { 
-    for(int k=0; k <=169;++k)
+    for(int k=0; k <=169*2;++k)
     {
       fluxke >> dummy;
-      if(ma==0) 
+      if(ma==0 || ma==1) 
       {
         cfluxke = dummy;
         cout << k << "  " << cfluxke << endl;

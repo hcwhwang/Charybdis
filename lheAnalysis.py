@@ -31,7 +31,7 @@ hNTHawking = TH1F("hNTHawking","Hawking Top;Multiplicity;Events",15,0,15)
 hNTopFrame = TH1F("RS 14TeV all","Top quark;Multiplicity;Events",15,0,15)
 
 
-hBhMass = TH1F("hBhMass","BH Mass;GeV/c^{2};Events", 100, 5000, 14000)
+hBhIniMass = TH1F("hBhIniMass","BH Mass;GeV/c^{2};Events", 100, 5000, 10000)
 
 hSt  = TH1F("hSt" , "Scalar sum of transverse momentum;S_{T} (GeV/c);Events per 150GeV/c", 150, 0, 15000)
 hPt  = TH1F("hPt" , "Transverse momentum;Transverse momentum p_{T} (GeV/c);Candidates per 150GeV/c", 50, 0, 5000)
@@ -61,9 +61,9 @@ for eventNode in lheFile.getElementsByTagName("event"):
 
     info = eventTexts[0].strip().split()
     n, proc = int(info[0]), int(info[1])        
-    weight, qscale = float(info[2]), float(info[3])
-    aqed, aqcd = float(info[4]), float(info[5])
-    hBhMass.Fill(qscale)
+    weight, qscale, mjmass = float(info[2]), float(info[3]), float(info[4])
+    aqed, aqcd = float(info[5]), float(info[6])
+    hBhIniMass.Fill(mjmass)
 
     event += 1
 
@@ -161,8 +161,8 @@ for eventNode in lheFile.getElementsByTagName("event"):
 hNs  = hNJets, hNTquark, hNBquark, hNHquark, hNLquark, hNGluons, hNLepton, hNPhoton, hNHiggs, hNOthers
 hPts = hPtTquark, hPtBquark, hPtLquark, hPtGluons, hPtPhoton, hPtOthers
 
-for h in hNs + hPts + (hNTquarkVsNBquark, hSt, hPt, hEta, hMET): h.SetLineWidth(2)
-for h in hNs + hPts + (hNTquarkVsNBquark, hSt, hPt, hEta, hMET): h.Write()
+for h in hNs + hPts + (hNTquarkVsNBquark, hSt, hPt, hEta, hMET, hBhIniMass): h.SetLineWidth(2)
+for h in hNs + hPts + (hNTquarkVsNBquark, hSt, hPt, hEta, hMET, hBhIniMass): h.Write()
 
 cN = TCanvas("cN", "cN", 500, 500)
 hNFrame = TH1F("hNFrame", "RS 14TeV all, 100fb^{-1};Multiplicity;Events", 15, 0, 15)
@@ -189,7 +189,7 @@ for h in hNTquark,hNBquark,hNLquark,hNGluons,hNLepton,hNPhoton,hNHiggs:
     legN.AddEntry(h, h.GetTitle(), "l")
 legN.Draw()
 cN1 = TCanvas("BH Mass", "BH Mass", 500, 500)
-hBhMass.Draw()
+hBhIniMass.Draw()
 
 cPt = TCanvas("cPt", "cPt", 500, 500)
 cPt.SetLogy()
