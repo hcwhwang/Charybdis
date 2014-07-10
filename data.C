@@ -6,20 +6,20 @@ void data()
   TGraph* g3 = new TGraph();
   
   double f1,f2,f3;
-  double cfluxke,dummy;
+  double cfluxke,cfluxkeMax,dummy;
   int i=0;
   int a1 = 5;
-  int a2 = 3;
-  int a3 = 3;
+  int a2 = 15;
+  int a3 = 15;
   int ME = 4;
   while(!flux.eof())
   {
     flux >> f1 >> f2 >> f3;
-    g1->SetPoint(i,i*5./26.,f1);
+    g1->SetPoint(i,i*5./25.,f1);
     g1->SetTitle("Scalar Number Flux;a*;Number Flux");
-    g2->SetPoint(i,i*5./26.,f2);
+    g2->SetPoint(i,i*5./25.,f2);
     g2->SetTitle("Spinor Number Flux;a*;Number Flux");
-    g3->SetPoint(i,i*5./26.,f3);
+    g3->SetPoint(i,i*5./25.,f3);
     g3->SetTitle("Vector Number Flux;a*;Number Flux");
     ++i;
   }
@@ -49,7 +49,7 @@ void data()
     for(int k=0; k <=156;++k)
     {
       fluxke >> dummy;
-      if(ma==a2 && k != 156) 
+      if(ma==a1 && k != 156) 
       {
         cfluxke = dummy;
         CFLUX2S1K->SetPoint(k,k+1,cfluxke);
@@ -61,55 +61,69 @@ void data()
     for(int k=0; k <=120;++k)
     {
       fluxke >> dummy;
-      if(ma==a3 && k != 120) 
+      if(ma==a1 && k != 120) 
       {
         cfluxke = dummy;
         CFLUX2S2K->SetPoint(k,k+1,cfluxke);
       }
     }
   }
-/*  TGraph *CFLUX2S0KE = new TGraph();
+  TGraph *CFLUX2S0KE = new TGraph();
   TGraph *CFLUX2S1KE = new TGraph();
   TGraph *CFLUX2S2KE = new TGraph();
   
-  for(int ma=1; ma <= 26; ++ma)
+  for(int ma=0; ma <= 25; ++ma)
   {
-    for(int k=1; k <= 169; ++k)
+    for(int k=0; k <= 168; ++k)
     {
-      for(int e=1; e <= 101; ++e)
+      for(int e=0; e <= 100; ++e)
       {
         fluxke >> dummy;
-        if(k==MK0 && e==ME) cfluxke = dummy;
+        if(k==0 && ma==a1 && e!=100)
+        {
+          cfluxke = dummy;
+          CFLUX2S0KE->SetPoint(e,(e+1)/20.,cfluxke);
+        }
       }
     }
-    CFLUX2S0KE->SetPoint(ma-1,ma,cfluxke);
   }
-  for(int ma=1; ma <= 26; ++ma)
+  for(int ma=0; ma <= 25; ++ma)
   {
-    for(int k=1; k <= 156; ++k)
+    for(int k=0; k <= 155; ++k)
     {
-      for(int e=1; e <= 101; ++e)
+      for(int e=0; e <= 100; ++e)
       {
         fluxke >> dummy;
-        if(k==MK1 && e==ME) cfluxke = dummy;
+        if(k==2 && ma==a1 && e!=100)
+        {
+           cfluxke = dummy;
+           CFLUX2S1KE->SetPoint(e,(e+1)/20.,cfluxke);
+        }
       }
     }
-    CFLUX2S1KE->SetPoint(ma-1,ma,cfluxke);
   }
-  for(int ma=1; ma <= 26; ++ma)
+  for(int ma=0; ma <= 25; ++ma)
   {
-    for(int k=1; k <= 120; ++k)
+    for(int k=0; k <= 119; ++k)
     {
-      for(int e=1; e <= 101; ++e)
+      for(int e=0; e <= 100; ++e)
       {
         fluxke >> dummy;
-        if(k==MK2 && e==ME) cfluxke = dummy;
+        if(k==2 && ma==a1 && e!=100)
+        {
+          cfluxke = dummy;
+          CFLUX2S2KE->SetPoint(e,(e+1)/20.,cfluxke);
+        }
+        if(ma==a1 && e==99)
+        {
+          cfluxkeMax = dummy;
+          cout << k << "   " << cfluxkeMax << endl; 
+        }
       }
     }
-    CFLUX2S2KE->SetPoint(ma-1,ma,cfluxke);
   }
   fluxke.close();
-*/  
+  
   g1->SetLineColor(kRed);
   g2->SetLineColor(kBlue);
   g3->SetLineColor(kGreen);
@@ -126,21 +140,24 @@ void data()
   l->AddEntry(g2,"spin 1/2","l"); 
   l->AddEntry(g3,"spin 1","l");
   l->Draw();
-  TCanvas *c2 = new TCanvas("c2","c2",500,500);
+//  TCanvas *c2 = new TCanvas("c2","c2",500,500);
   CFLUX2S0K->SetLineColor(kRed);
   CFLUX2S1K->SetLineColor(kBlue);
   CFLUX2S2K->SetLineColor(kGreen);
-  CFLUX2S0K->Draw("ALP"); 
-  TCanvas *c3 = new TCanvas("c3","c3",500,500);
-  CFLUX2S1K->Draw("ALP"); 
+  CFLUX2S0KE->SetLineColor(kRed);
+  CFLUX2S1KE->SetLineColor(kBlue);
+  CFLUX2S2KE->SetLineColor(kGreen);
+//  CFLUX2S0KE->Draw("ALP"); 
+//  TCanvas *c3 = new TCanvas("c3","c3",500,500);
+//  CFLUX2S1K->Draw("ALP"); 
   TCanvas *c4 = new TCanvas("c4","c4",500,500);
   CFLUX2S2K->Draw("ALP"); 
-/*  TCanvas *c5 = new TCanvas("c5","c5",500,500);
-  CFLUX2S0KE->Draw("ALP");
-  TCanvas *c6 = new TCanvas("c6","c6",500,500);
-  CFLUX2S1KE->Draw("ALP");
+//  TCanvas *c5 = new TCanvas("c5","c5",500,500);
+//  CFLUX2S0KE->Draw("ALP");
+//  TCanvas *c6 = new TCanvas("c6","c6",500,500);
+//  CFLUX2S1KE->Draw("ALP");
   TCanvas *c7 = new TCanvas("c7","c7",500,500);
   CFLUX2S2KE->Draw("ALP");
-*/  
+
   
 }
