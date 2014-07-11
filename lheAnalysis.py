@@ -47,6 +47,10 @@ hPtLepton = TH1F("hPtLepton", "Lepton;Transverse momentum p_{T} (GeV/c);Candidat
 hPtOthers = TH1F("hPtOthers", "Others;Transverse momentum p_{T} (GeV/c);Candidates per 150GeV/c", 50, 0, 5000)
 hPtHiggs = TH1F("hPtHiggs", "Higgs;Transverse momentum p_{T} (GeV/c);Candidates per 150GeV/c", 50, 0, 5000)
 
+hPtSpinFrame = TH1F("hPtSpinFrame", "Spin;Transverse momentum p_{T} (GeV/c);Candidates per 150GeV/c", 50, 0, 3000)
+hPtScalar = TH1F("hPtScalar", "Scalar;Transverse momentum p_{T} (GeV/c);Candidates per 150GeV/c", 50, 0, 3000)
+hPtSpinor = TH1F("hPtSpinor", "Spinor;Transverse momentum p_{T} (GeV/c);Candidates per 150GeV/c", 50, 0, 3000)
+hPtVector = TH1F("hPtVector", "Vector;Transverse momentum p_{T} (GeV/c);Candidates per 150GeV/c", 50, 0, 3000)
 
 def fill(hist, value):
     valueUp = hist.GetXaxis().GetXmax()
@@ -60,10 +64,16 @@ for eventNode in lheFile.getElementsByTagName("event"):
     eventTexts = eventNode.childNodes[0].nodeValue.strip().split('\n')
 
     info = eventTexts[0].strip().split()
-    n, proc = int(info[0]), int(info[1])        
-    weight, qscale, mjmass = float(info[2]), float(info[3]), float(info[4])
-    aqed, aqcd = float(info[5]), float(info[6])
-    hBhIniMass.Fill(mjmass)
+    if len(info)==7:
+        n, proc = int(info[0]), int(info[1])        
+        weight, qscale, mjmass = float(info[2]), float(info[3]), float(info[4])
+        aqed, aqcd = float(info[5]), float(info[6])
+        hBhIniMass.Fill(mjmass)
+    elif len(info)==6:
+        n, proc = int(info[0]), int(info[1])        
+        weight, qscale = float(info[2]), float(info[3]) 
+        aqed, aqcd = float(info[4]), float(info[5])
+
 
     event += 1
 
@@ -137,6 +147,13 @@ for eventNode in lheFile.getElementsByTagName("event"):
             nOthers += 1
             fill(hPtOthers, pt)
 
+        if absPdgId in (25,39):
+            fill(hPtScalar, pt)
+        elif absPdgId in (21,22,23,24):
+            fill(hPtVector, pt)
+        else:
+            fill(hPtSpinor, pt)
+
         if pt > 50 and absPdgId not in (11, 13, 15):
             st += pt
     if met > 50: st += met
@@ -160,9 +177,10 @@ for eventNode in lheFile.getElementsByTagName("event"):
 
 hNs  = hNJets, hNTquark, hNBquark, hNHquark, hNLquark, hNGluons, hNLepton, hNPhoton, hNHiggs, hNOthers
 hPts = hPtTquark, hPtBquark, hPtLquark, hPtGluons, hPtPhoton, hPtOthers
+hPtSpin = hPtScalar, hPtSpinor, hPtVector
 
 for h in hNs + hPts + (hNTquarkVsNBquark, hSt, hPt, hEta, hMET, hBhIniMass): h.SetLineWidth(2)
-for h in hNs + hPts + (hNTquarkVsNBquark, hSt, hPt, hEta, hMET, hBhIniMass): h.Write()
+for h in hNs + hPts + hPtSpin + (hNTquarkVsNBquark, hSt, hPt, hEta, hMET, hBhIniMass): h.Write()
 
 cN = TCanvas("cN", "cN", 500, 500)
 hNFrame = TH1F("hNFrame", "RS 14TeV all, 100fb^{-1};Multiplicity;Events", 15, 0, 15)
@@ -207,6 +225,10 @@ hPtOthers.SetLineColor(kGray)
 hPtHiggs.SetLineColor(kOrange+1)
 hPtLepton.SetLineColor(kGray)
 
+hPtScalar.SetLineColor(kRed)
+hPtSpinor.SetLineColor(kBlue)
+hPtVector.SetLineColor(kGreen)
+
 legPt = TLegend(0.65, 0.65, 0.92, 0.92)
 legPt.SetFillStyle(0)
 legPt.SetBorderSize(0)
@@ -230,3 +252,16 @@ for h in hNTops:
     h.Draw("same")
     legN1.AddEntry(h,h.GetTitle(),"l")   
 legN1.Draw()
+
+legSpinPt = TLegend(0.65, 0.65, 0.92, 0.92)
+legSpinPt.SetFillStyle(0)
+legSpinPt.SetBorderSize(0)
+cN3 = TCanvas("cN3", "cN3", 500, 500)
+cN3.SetLogy()
+hPtSpinFrame.SetMaximum(max(h.GetMaximum() for h in (hPtScalar,hPtSpinor,hPtVector))*1.2)
+hPtSpinFrame.Draw()
+for h in hPtScalar, hPtSpinor, hPtVector:
+    h.Draw("same")
+    legSpinPt.AddEntry(h,h.GetTitle(),"l")
+legSpinPt.Draw()
+

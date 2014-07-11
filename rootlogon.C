@@ -88,7 +88,7 @@
 
 // For the Global title:
 
-  tdrStyle->SetOptTitle(0);
+  //tdrStyle->SetOptTitle(0);
   tdrStyle->SetTitleFont(42);
   tdrStyle->SetTitleColor(1);
   tdrStyle->SetTitleTextColor(1);
