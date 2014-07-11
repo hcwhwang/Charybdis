@@ -38,7 +38,7 @@ void fluxke()
       }
     }
   }
-  double sumFlux[101]=0;
+  double sumFlux[101]={0.};
   for(int ma=0; ma <= 25; ++ma)
   {
     for(int k=0; k <= 119; ++k)
@@ -49,7 +49,8 @@ void fluxke()
         if(ma==a1 && e!=101 && e!=102)
         {
         	sumFlux[e] += dummy;
-        	cout << k <<"  " << e << "  " <<  sumFlux[e] << endl;
+          if(k<10)
+        	cout << k <<"  " << e << "  " <<  sumFlux[e] << "  " << dummy <<endl;
         }
         if(k==2 && ma==a1 && e!=101 && e!=102)
         {
@@ -59,11 +60,12 @@ void fluxke()
       }
     }
   }
-  flux.close();
   for(int e=0; e <=100; ++e)
   {
     TOTALFLUX->SetPoint(e,(e)/20.,sumFlux[e]);
   }
+  
+  flux.close();
   TCanvas *c5 = new TCanvas("c5","c5",500,500);
   FLUX2S0KE->Draw("ALP");
   TCanvas *c6 = new TCanvas("c6","c6",500,500);
