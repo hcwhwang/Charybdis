@@ -8,7 +8,7 @@ void data()
   double f1,f2,f3;
   double cfluxke,cfluxkeMax,dummy;
   int i=0;
-  int a1 = 5;
+  int a1 = 7;
   int a2 = 15;
   int a3 = 15;
   int ME = 4;
@@ -71,6 +71,7 @@ void data()
   TGraph *CFLUX2S0KE = new TGraph();
   TGraph *CFLUX2S1KE = new TGraph();
   TGraph *CFLUX2S2KE = new TGraph();
+  TGraph *TOTALFLUX = new TGraph();
   
   for(int ma=0; ma <= 25; ++ma)
   {
@@ -102,6 +103,8 @@ void data()
       }
     }
   }
+  double sumFlux[99];
+
   for(int ma=0; ma <= 25; ++ma)
   {
     for(int k=0; k <= 119; ++k)
@@ -109,6 +112,10 @@ void data()
       for(int e=0; e <= 100; ++e)
       {
         fluxke >> dummy;
+        if(ma==a1 && e!=100)
+        {
+        	sumFlux[e] += dummy;
+        }	
         if(k==2 && ma==a1 && e!=100)
         {
           cfluxke = dummy;
@@ -117,12 +124,16 @@ void data()
         if(ma==a1 && e==99)
         {
           cfluxkeMax = dummy;
-          cout << k << "   " << cfluxkeMax << endl; 
+          //cout << k << "   " << cfluxkeMax << endl; 
         }
       }
     }
   }
   fluxke.close();
+  for(int e=0; e <=99; e++)
+  {
+  	TOTALFLUX->SetPoint(e,(e+1)/20.,sumFlux[e]);
+  }
   
   g1->SetLineColor(kRed);
   g2->SetLineColor(kBlue);
@@ -158,6 +169,7 @@ void data()
 //  CFLUX2S1KE->Draw("ALP");
   TCanvas *c7 = new TCanvas("c7","c7",500,500);
   CFLUX2S2KE->Draw("ALP");
-
+  TCanvas *c8 = new TCanvas("c8","c8",500,500);
+  TOTALFLUX->Draw("ALP");
   
 }
