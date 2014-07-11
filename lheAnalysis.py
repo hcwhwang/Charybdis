@@ -30,6 +30,10 @@ hNTRemnant = TH1F("hNTRemnant","Remnant Top;Multiplicity;Events",15,0,15)
 hNTHawking = TH1F("hNTHawking","Hawking Top;Multiplicity;Events",15,0,15)
 hNTopFrame = TH1F("RS 14TeV all","Top quark;Multiplicity;Events",15,0,15)
 
+hNSpinFrame = TH1F("hNSpinFrame","Spin Multiplicity;Multiplicity;Events",15,0,15)
+hNScalar = TH1F("hNScalar","Scalar Multiplicity;Multiplicity;Events",15,0,15)
+hNSpinor = TH1F("hNSpinor","Spinor Multiplicity;Multiplicity;Events",15,0,15)
+hNVector = TH1F("hNVector","Vector Multiplicity;Multiplicity;Events",15,0,15)
 
 hBhIniMass = TH1F("hBhIniMass","BH Mass;GeV/c^{2};Events", 100, 5000, 10000)
 
@@ -83,6 +87,7 @@ for eventNode in lheFile.getElementsByTagName("event"):
     nTquark, nBquark, nLquark = 0, 0, 0
     nGluons, nLepton, nPhoton, nOthers, nHiggs = 0, 0, 0, 0, 0
     nTopHawking, nTopRemnant = 0, 0
+    nScalar, nSpinor, nVector = 0, 0, 0
     for i in range(n):
         pline = eventTexts[i+1].strip()
         if pline == "" or pline[0] == '#': continue
@@ -149,10 +154,13 @@ for eventNode in lheFile.getElementsByTagName("event"):
 
         if absPdgId in (25,39):
             fill(hPtScalar, pt)
+            nScalar += 1
         elif absPdgId in (21,22,23,24):
             fill(hPtVector, pt)
+            nVector += 1
         else:
             fill(hPtSpinor, pt)
+            nSpinor += 1
 
         if pt > 50 and absPdgId not in (11, 13, 15):
             st += pt
@@ -172,15 +180,20 @@ for eventNode in lheFile.getElementsByTagName("event"):
     hNHiggs.Fill(nHiggs)
     hNTquarkVsNBquark.Fill(nTquark, nBquark)
 
+    hNScalar.Fill(nScalar)
+    hNSpinor.Fill(nSpinor)
+    hNVector.Fill(nVector)
+
     fill(hSt, st)
     fill(hMET, met)
 
 hNs  = hNJets, hNTquark, hNBquark, hNHquark, hNLquark, hNGluons, hNLepton, hNPhoton, hNHiggs, hNOthers
 hPts = hPtTquark, hPtBquark, hPtLquark, hPtGluons, hPtPhoton, hPtOthers
 hPtSpin = hPtScalar, hPtSpinor, hPtVector
+hNSpin = hNScalar, hNSpinor, hNVector
 
-for h in hNs + hPts + (hNTquarkVsNBquark, hSt, hPt, hEta, hMET, hBhIniMass): h.SetLineWidth(2)
-for h in hNs + hPts + hPtSpin + (hNTquarkVsNBquark, hSt, hPt, hEta, hMET, hBhIniMass): h.Write()
+for h in hNs + hPts + hPtSpin + hNSpin + (hNTquarkVsNBquark, hSt, hPt, hEta, hMET, hBhIniMass): h.SetLineWidth(2)
+for h in hNs + hPts + hPtSpin + hNSpin + (hNTquarkVsNBquark, hSt, hPt, hEta, hMET, hBhIniMass): h.Write()
 
 cN = TCanvas("cN", "cN", 500, 500)
 hNFrame = TH1F("hNFrame", "RS 14TeV all, 100fb^{-1};Multiplicity;Events", 15, 0, 15)
@@ -264,4 +277,22 @@ for h in hPtScalar, hPtSpinor, hPtVector:
     h.Draw("same")
     legSpinPt.AddEntry(h,h.GetTitle(),"l")
 legSpinPt.Draw()
+
+hNSpinFrame.SetMinimum(0)
+hNSpinFrame.SetMaximum(max(x.GetMaximum() for x in hNSpin)*1.2)
+hNScalar.SetLineColor(kRed)
+hNSpinor.SetLineColor(kBlue)
+hNVector.SetLineColor(kGreen)
+
+legSpinN = TLegend(0.65, 0.65, 0.92, 0.92)
+legSpinN.SetFillStyle(0)
+legSpinN.SetBorderSize(0)
+cN4 = TCanvas("cN4", "cN4", 500, 500)
+hNSpinFrame.Draw()
+for h in hNSpin:
+    h.Draw("same")
+    legSpinN.AddEntry(h,h.GetTitle(),"l")
+legSpinPt.Draw()
+
+
 

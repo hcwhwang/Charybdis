@@ -18,7 +18,7 @@ void fluxke()
   int j2 = pow(k2+1+1/100.,0.5);
   int m2 = k2+1-j2*(j2+1);
  
-  int n=2;
+  int n=1;
   ifstream flux(Form("data_files/fluxke_n%i.dat",n));
   TGraph *FLUX2S0KE = new TGraph();
   FLUX2S0KE->SetLineColor(kRed);
