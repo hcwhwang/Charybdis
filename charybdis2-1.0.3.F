@@ -1242,12 +1242,14 @@ C--PA is BH 5-momentum before, PB after decay
          ENDIF
 #endif
       ENDIF
+C      PC(4)=PC(4)*RH
 C--Add emitted particle to event record
       CALL CHVEQU(5,PC,PUP(1,NUP))
       IDUP(NUP)=PT
       ISTUP(NUP) = 1
       MOTHUP(1,NUP) = 1
       MOTHUP(2,NUP) = 2
+C      PC(4)=PC(4)/RH
 C--Sort out polarizations
       IF(BHSPIN)THEN
          IF(SPIN.NE.0)THEN
@@ -1531,7 +1533,7 @@ C--Perform the NBODY decay of the remnant
 C------Put particle properties in the Les houches common block
          PUP(5,NUP+I) = CHFMAS(ID(I))
          PSTEST=PSTEST-PUP(5,NUP+I)
-         ISTUP(NUP+I) = 1
+         ISTUP(NUP+I) = 2
          IDUP(NUP+I) = ID(I)
          MOTHUP(1,NUP+I) = 1
          MOTHUP(2,NUP+I) = 2

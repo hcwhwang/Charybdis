@@ -52,7 +52,7 @@ LHAPDFSET: (default is 10000 -- needs to be set if you're using LHAPDF)
 ----- MC & OUTPUT -----
 -----------------------
 CHNMAXEV: (default is 100)
-10000
+1000
 NRN(1): (default is 245234)
 2429534
 NRN(2): (default is 42542)

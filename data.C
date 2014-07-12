@@ -10,8 +10,8 @@ void data()
   double cfluxke,cfluxkeMax,dummy;
   int i=0;
   int a0 = 7;
-  int a1 = 15;
-  int a2 = 15;
+  int a1 = 7;
+  int a2 = 7;
   int ME = 4;
   while(!flux.eof() && i != 26)
   {

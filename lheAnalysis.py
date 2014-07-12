@@ -30,6 +30,8 @@ hNTRemnant = TH1F("hNTRemnant","Remnant Top;Multiplicity;Events",15,0,15)
 hNTHawking = TH1F("hNTHawking","Hawking Top;Multiplicity;Events",15,0,15)
 hNTopFrame = TH1F("RS 14TeV all","Top quark;Multiplicity;Events",15,0,15)
 
+hEnergy = TH1F("hEnergy","Energy;Energy (GeV);Candidates per 100GeV/c", 50, 0, 10)
+
 hNSpinFrame = TH1F("hNSpinFrame","Spin Multiplicity;Multiplicity;Events",15,0,15)
 hNScalar = TH1F("hNScalar","Scalar Multiplicity;Multiplicity;Events",15,0,15)
 hNSpinor = TH1F("hNSpinor","Spinor Multiplicity;Multiplicity;Events",15,0,15)
@@ -107,8 +109,8 @@ for eventNode in lheFile.getElementsByTagName("event"):
         ctau = float(pline[11])
         spin = float(pline[12])
 
-        if status != 2 and status != 1: continue
-        #if status != 1 : continue
+        #if status != 2 and status != 1: continue
+        if status != 1 : continue
         #if status != 2 : continue
 
         absPdgId = abs(pdgId)
@@ -152,14 +154,17 @@ for eventNode in lheFile.getElementsByTagName("event"):
             nOthers += 1
             fill(hPtOthers, pt)
 
-        if absPdgId in (25,39):
+        if absPdgId ==25:
             fill(hPtScalar, pt)
+            fill(hEnergy, e)
             nScalar += 1
         elif absPdgId in (21,22,23,24):
             fill(hPtVector, pt)
+            fill(hEnergy, e)
             nVector += 1
-        else:
+        elif absPdgId != 39:
             fill(hPtSpinor, pt)
+            fill(hEnergy, e)
             nSpinor += 1
 
         if pt > 50 and absPdgId not in (11, 13, 15):
@@ -294,5 +299,9 @@ for h in hNSpin:
     legSpinN.AddEntry(h,h.GetTitle(),"l")
 legSpinPt.Draw()
 
-
+hEnergy.SetLineWidth(2)
+hEnergy.Scale(1/(hEnergy.Integral()))
+cN5 = TCanvas("cN5", "cN5", 500, 500)
+cN5.SetLogy()
+hEnergy.Draw()
 

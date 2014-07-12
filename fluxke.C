@@ -1,15 +1,15 @@
 void fluxke()
 {
   double  dummy, value;
-  int a0=0;
-  int a1=0;
-  int a2=0;
+  int a0=7;
+  int a1=2;
+  int a2=2;
 
   int k0 =1;
   int j0 = pow(k0+1-1/100.,0.5);
   int m0 = k0-j0*(j0+1);
 
-  int k1 =0;
+  int k1 =71;
   int j1Int = pow(k1+1-1/100.,0.5)-0.5;
   float j1 = j1Int+0.5;
   float m1 = k1+0.25-j1*(j1+1);
@@ -18,7 +18,7 @@ void fluxke()
   int j2 = pow(k2+1+1/100.,0.5);
   int m2 = k2+1-j2*(j2+1);
  
-  int n=1;
+  int n=2;
   ifstream flux(Form("data_files/fluxke_n%i.dat",n));
   TGraph *FLUX2S0KE = new TGraph();
   FLUX2S0KE->SetLineColor(kRed);
@@ -28,7 +28,7 @@ void fluxke()
   TGraph *FLUX2S1KE = new TGraph();
   FLUX2S1KE->SetLineColor(kBlue);
   FLUX2S1KE->SetLineWidth(3);
-  FLUX2S1KE->SetTitle(Form("Spinor D=%i,a*=%f,j=%i,m=%i;#omega r_{h};Flux",n+4,1./5.*a1,j1,m1)); 
+  FLUX2S1KE->SetTitle(Form("Spinor D=%i,a*=%f,j=%f,m=%f;#omega r_{h};Flux",n+4,1./5.*a1,j1,m1)); 
 
   TGraph *FLUX2S2KE = new TGraph();
   FLUX2S2KE->SetLineColor(kGreen);
@@ -65,7 +65,7 @@ void fluxke()
       for(int e=0; e <= 102; ++e)
       {
         flux >> dummy;
-        if(ma==a0 && e!=101 && e!=102)
+        if(ma==a1 && e!=101 && e!=102)
         {
         	sumScalarFlux[e] += dummy;
         }
@@ -103,7 +103,7 @@ void fluxke()
       for(int e=0; e <= 102; ++e)
       {
         flux >> dummy;
-        if(ma==a2 && e!=101 && e!=102)
+        if(ma==a1 && e!=101 && e!=102)
         {
         	sumVectorFlux[e] += dummy;
         }
