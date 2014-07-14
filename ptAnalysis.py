@@ -16,35 +16,41 @@ hScalarPtFrame = TH1F("hScalarPtFrame", "Scalar P_{T};P_{T}(GeV/c);Events",100, 
 hSpinorPtFrame = TH1F("hSpinorPtFrame", "Spinor P_{T};P_{T}(GeV/c);Events",100, 0, 3000)
 hVectorPtFrame = TH1F("hVectorPtFrame", "Vector P_{T};P_{T}(GeV/c);Events",100, 0, 3000)
 hBhMassFrame = TH1F("hBhMassFrame", "Blackhole Mass;mass(GeV/c^{2});Events",100, 5000, 10000)
+hEnergyFrame = TH1F("hEnergyFrame", "Energy;#omega;Events",100, 0, 5000)
 
 hLowDBhMass = TH1F("hLowDBhMass", "Low Dimension Mass;mass(GeV/c^{2});Events",100, 5000, 10000)
 hLowDPt = TH1F("hLowDPt", "Low Dimension Pt;P_{T}(GeV/c);Events",100, 0, 3000)
+hLowDEnergy = TH1F("hLowDE", "Low Dimension Energy;#omega;Events",100, 0, 5000)
 hLowDBhMass = file1.Get("hBhIniMass")
-hLowDBhMass.SetTitle("5D")
+hLowDBhMass.SetTitle("6D")
 hLowDBhMass.SetLineColor(kBlue)
 
 hLowDPt = file1.Get("hPt")
-hLowDPt.SetTitle("5D")
+hLowDPt.SetTitle("6D")
 hLowDPt.SetLineColor(kBlue)
 
 hLowDScalarPt = file1.Get("hPtScalar")
-hLowDScalarPt.SetTitle("5D")
+hLowDScalarPt.SetTitle("6D")
 hLowDScalarPt.SetLineColor(kBlue)
 
 hLowDSpinorPt = file1.Get("hPtSpinor")
-hLowDSpinorPt.SetTitle("5D")
+hLowDSpinorPt.SetTitle("6D")
 hLowDSpinorPt.SetLineColor(kBlue)
 
 hLowDVectorPt = file1.Get("hPtVector")
-hLowDVectorPt.SetTitle("5D")
+hLowDVectorPt.SetTitle("6D")
 hLowDVectorPt.SetLineColor(kBlue)
 
+hLowDEnergy = file1.Get("hEnergy")
+hLowDEnergy.SetTitle("6D")
+hLowDEnergy.SetLineColor(kBlue)
 
 
 hHighBhMass = TH1F("hHighBhMass", "High Dimension Mass;mass(GeV/c^{2});Events",100, 5000, 10000)
 hHighDPt = TH1F("hHighDPt", "High Dimension Pt;P_{T}(GeV/c);Events",100, 0, 3000)
+hHighDEnergy = TH1F("hHighDE", "High Dimension Energy;#omega;Events",100, 0, 5000)
 hLowDBhMass = file1.Get("hBhIniMass")
-hLowDBhMass.SetTitle("5D")
+hLowDBhMass.SetTitle("6D")
 hLowDBhMass.SetLineColor(kBlue)
 
 hHighDPt = file2.Get("hPt")
@@ -67,10 +73,15 @@ hHighDBhMass = file2.Get("hBhIniMass")
 hHighDBhMass.SetTitle("10D")
 hHighDBhMass.SetLineColor(kRed)
 
+hHighDEnergy = file2.Get("hEnergy")
+hHighDEnergy.SetTitle("10D")
+hHighDEnergy.SetLineColor(kRed)
+
 hPtSet = hLowDPt, hHighDPt
 hScalarPtSet = hLowDScalarPt, hHighDScalarPt
 hSpinorPtSet = hLowDSpinorPt, hHighDSpinorPt
 hVectorPtSet = hLowDVectorPt, hHighDVectorPt
+hEnergySet = hLowDEnergy, hHighDEnergy
 legPt = TLegend(0.65, 0.65, 0.9, 0.9)
 legPt.SetFillStyle(0)
 legPt.SetBorderSize(0)
@@ -154,4 +165,23 @@ for h in hVectorPtSet:
   h.Draw("same")
   legVectorPt.AddEntry(h, h.GetTitle(), "l")
 legVectorPt.Draw()
+
+#Energy
+legEnergy = TLegend(0.65, 0.65, 0.9, 0.9)
+legEnergy.SetFillStyle(0)
+legEnergy.SetBorderSize(0)
+c6 = TCanvas("c6","c6",500,500)
+c6.SetLogy()
+
+for h in hEnergySet:
+  h.Scale(1/(h.Integral()))
+
+hEnergyFrame.SetMaximum(max(h.GetMaximum() for h in hEnergySet)*1.2)
+hEnergyFrame.Draw()
+
+for h in hEnergySet:
+  h.Draw("same")
+  legEnergy.AddEntry(h, h.GetTitle(), "l")
+legEnergy.Draw()
+
 

@@ -104,7 +104,7 @@ DGMS: (default is 1000.0)
 ----- Evaporation switches -----
 --------------------------------
 BHSPIN: (default is T)
-T
+F
 BHJVAR: (default is T)
 T
 BHANIS: (default is T)

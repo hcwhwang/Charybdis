@@ -197,8 +197,8 @@ hPts = hPtTquark, hPtBquark, hPtLquark, hPtGluons, hPtPhoton, hPtOthers
 hPtSpin = hPtScalar, hPtSpinor, hPtVector
 hNSpin = hNScalar, hNSpinor, hNVector
 
-for h in hNs + hPts + hPtSpin + hNSpin + (hNTquarkVsNBquark, hSt, hPt, hEta, hMET, hBhIniMass): h.SetLineWidth(2)
-for h in hNs + hPts + hPtSpin + hNSpin + (hNTquarkVsNBquark, hSt, hPt, hEta, hMET, hBhIniMass): h.Write()
+for h in hNs + hPts + hPtSpin + hNSpin + (hNTquarkVsNBquark, hEnergy, hSt, hPt, hEta, hMET, hBhIniMass): h.SetLineWidth(2)
+for h in hNs + hPts + hPtSpin + hNSpin + (hNTquarkVsNBquark, hEnergy, hSt, hPt, hEta, hMET, hBhIniMass): h.Write()
 
 cN = TCanvas("cN", "cN", 500, 500)
 hNFrame = TH1F("hNFrame", "RS 14TeV all, 100fb^{-1};Multiplicity;Events", 15, 0, 15)

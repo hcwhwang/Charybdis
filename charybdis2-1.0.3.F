@@ -1242,14 +1242,14 @@ C--PA is BH 5-momentum before, PB after decay
          ENDIF
 #endif
       ENDIF
-C      PC(4)=PC(4)*RH
+      PC(4)=PC(4)*RH
 C--Add emitted particle to event record
       CALL CHVEQU(5,PC,PUP(1,NUP))
       IDUP(NUP)=PT
       ISTUP(NUP) = 1
       MOTHUP(1,NUP) = 1
       MOTHUP(2,NUP) = 2
-C      PC(4)=PC(4)/RH
+      PC(4)=PC(4)/RH
 C--Sort out polarizations
       IF(BHSPIN)THEN
          IF(SPIN.NE.0)THEN
@@ -5423,6 +5423,7 @@ C--Tiny masses give large astar values whose exact covergence are beyond numeric
  20   CST=1D0+AST**2
 C--HORIZON RADIUS
       RH=RS/CST**PEX
+C      WRITE(*,*) MBH,MPL,RS*MPL, RH*MPL
 C--OBLATENESS
       OBLA=AST*RH
 C--ANGULAR VELOCITY

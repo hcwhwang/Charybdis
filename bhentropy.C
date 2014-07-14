@@ -36,7 +36,7 @@ double sH(int nE,double mBh,double aStar)
 }
 void bhentropy()
 {
-  const int nE=6;
+  const int nE=2;
   double mBh;
   const double mBhConst = 14.;
   double mBhMin=5.;
@@ -94,22 +94,22 @@ void bhentropy()
   for(int n=1;n<=6;++n)
   {
     g6->SetPoint(n-1,n,sH(n,14.,0.));
-    g7->SetPoint(n-1,n,sH(n,14.,1.));
-    g8->SetPoint(n-1,n,sH(n,14.,2.));
-    g9->SetPoint(n-1,n,sH(n,14.,3.));
-    g10->SetPoint(n-1,n,sH(n,14.,4.));
-    g11->SetPoint(n-1,n,sH(n,14.,5.));
+    g7->SetPoint(n-1,n,sH(n,14.,0.5));
+    g8->SetPoint(n-1,n,sH(n,14.,1.));
+    g9->SetPoint(n-1,n,sH(n,14.,1.5));
+    g10->SetPoint(n-1,n,sH(n,14.,2.));
+    g11->SetPoint(n-1,n,sH(n,14.,2.5));
   }
 
   TLegend* l = new TLegend(0.6,0.6,0.9,0.9);
   l->SetFillStyle(0);
   l->SetBorderSize(0);
   l->AddEntry(g6,"a*=0","l");
-  l->AddEntry(g7,"a*=1","l");
-  l->AddEntry(g8,"a*=2","l");
-  l->AddEntry(g9,"a*=3","l");
-  l->AddEntry(g10,"a*=4","l");
-  l->AddEntry(g11,"a*=5","l");
+  l->AddEntry(g7,"a*=0.5","l");
+  l->AddEntry(g8,"a*=1","l");
+  l->AddEntry(g9,"a*=1.5","l");
+  l->AddEntry(g10,"a*=2","l");
+  l->AddEntry(g11,"a*=2.5","l");
   
   
   for(int i=0;i<=nMBhPoint;++i)
@@ -124,7 +124,7 @@ void bhentropy()
         {
           if (j==0) 
           {
-            g3->SetPoint(i,mBh,rS(nE,mBh)); 
+            g3->SetPoint(i,mBh,rH(nE,mBh,0)); 
             g4->SetPoint(i,mBh,tH(nE,mBh,0)); 
           }
         }
